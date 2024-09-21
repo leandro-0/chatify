@@ -7,7 +7,7 @@
     android:padding="40dp"
     android:background="@drawable/screen"
     android:orientation="vertical"
-    tools:context=".MainActivity">
+    tools:context=".RegisterPage">
 
     <TextView
         android:layout_width="match_parent"
@@ -15,11 +15,11 @@
         android:textStyle="bold"
         android:textSize="35sp"
         android:textColor="@color/white"
-        android:text="Welcome Back"/>
+        android:text="Hello,"/>
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Log In!"
+        android:text="Sign Up!"
         android:textColor="@color/white"
         android:textSize="20sp"
         android:textStyle="bold"/>
@@ -28,7 +28,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="150dp"
         style = "@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/email"
             android:layout_width="match_parent"
@@ -50,12 +49,12 @@
             android:inputType="textPassword"/>
     </com.google.android.material.textfield.TextInputLayout>
     <Button
-        android:id="@+id/sign_in"
+        android:id="@+id/sign_up"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textStyle="bold"
         android:textSize="20sp"
-        android:text="Sign Up"
+        android:text="Sign In"
         android:background="@drawable/round_btn"
         android:layout_marginTop="100dp"/>
 
@@ -69,19 +68,17 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Don't have an account?"
+            android:text="Already have an account?"
             android:textSize="15sp"
             android:textStyle="bold"/>
         <TextView
-            android:id="@+id/sign_up"
+            android:id="@+id/sign_in"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Sign In"
+            android:text="Log In!"
             android:textStyle="bold"
             android:textSize="15sp"
             android:textColor="@color/indigo"
             android:layout_marginLeft="10dp"/>
     </LinearLayout>
-
-
 </LinearLayout>
