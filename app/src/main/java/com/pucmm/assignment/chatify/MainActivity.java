@@ -17,6 +17,7 @@ import android.widget.Button;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.pucmm.assignment.chatify.home.Home;
 
 import android.widget.TextView;
 import android.widget.Toast;
