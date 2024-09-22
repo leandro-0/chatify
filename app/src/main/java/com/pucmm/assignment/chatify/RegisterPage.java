@@ -16,10 +16,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.Map;
 
 public class RegisterPage extends AppCompatActivity {
-
-
     TextInputEditText editTextEmail, editTextPassword;
 
     Button signUp;
@@ -27,6 +28,7 @@ public class RegisterPage extends AppCompatActivity {
     TextView signIn;
 
     FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,10 +69,19 @@ public class RegisterPage extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            Toast.makeText(RegisterPage.this, "Registration Successfully", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(RegisterPage.this, MainActivity.class);
-                            startActivity(intent);
-                            finish();
+                            db.collection("users").add(Map.of("email", email)).addOnCompleteListener(new OnCompleteListener() {
+                                @Override
+                                public void onComplete(@NonNull Task task) {
+                                    if (!task.isSuccessful()) {
+                                        Toast.makeText(RegisterPage.this, "Failed to add user", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        Toast.makeText(RegisterPage.this, "Registration Successfully", Toast.LENGTH_SHORT).show();
+                                        Intent intent = new Intent(RegisterPage.this, MainActivity.class);
+                                        startActivity(intent);
+                                        finish();
+                                    }
+                                }
+                            });
                         } else {
                             Toast.makeText(RegisterPage.this, "Authentication failed", Toast.LENGTH_SHORT).show();
                         }
