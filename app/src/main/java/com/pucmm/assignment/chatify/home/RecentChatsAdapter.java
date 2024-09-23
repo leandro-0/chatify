@@ -9,7 +9,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.pucmm.assignment.chatify.R;
 import com.pucmm.assignment.chatify.core.models.ChatModel;
+import com.pucmm.assignment.chatify.core.models.OneToOneChatModel;
 
+import java.time.chrono.ChronoLocalDate;
 import java.util.List;
 
 
@@ -36,6 +38,9 @@ public class RecentChatsAdapter extends RecyclerView.Adapter<ChatViewHolder> {
     public void onBindViewHolder(@NonNull ChatViewHolder holder, int position) {
         holder.nameView.setText(chats.get(position).getTitle());
         holder.lastMessageView.setText(chats.get(position).getLastMessage().getContent());
+        holder.imageView.setImageResource(chats.get(position) instanceof OneToOneChatModel
+                ? R.drawable.user
+                : R.drawable.group);
     }
 
     @Override
