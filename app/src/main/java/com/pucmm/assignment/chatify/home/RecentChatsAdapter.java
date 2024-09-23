@@ -8,16 +8,16 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.pucmm.assignment.chatify.R;
-import com.pucmm.assignment.chatify.core.models.RecentChatModel;
+import com.pucmm.assignment.chatify.core.models.ChatModel;
 
 import java.util.List;
 
 
 public class RecentChatsAdapter extends RecyclerView.Adapter<ChatViewHolder> {
     private Context context;
-    private List<RecentChatModel> chats;
+    private List<ChatModel> chats;
 
-    public RecentChatsAdapter(Context context, List<RecentChatModel> chats) {
+    public RecentChatsAdapter(Context context, List<ChatModel> chats) {
         this.context = context;
         this.chats = chats;
     }
@@ -34,8 +34,8 @@ public class RecentChatsAdapter extends RecyclerView.Adapter<ChatViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ChatViewHolder holder, int position) {
-        holder.nameView.setText(chats.get(position).getName());
-        holder.lastMessageView.setText(chats.get(position).getLastMessage());
+        holder.nameView.setText(chats.get(position).getTitle());
+        holder.lastMessageView.setText(chats.get(position).getLastMessage().getContent());
     }
 
     @Override

@@ -13,7 +13,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.pucmm.assignment.chatify.R;
-import com.pucmm.assignment.chatify.core.models.RecentChatModel;
+import com.pucmm.assignment.chatify.core.models.ChatModel;
+import com.pucmm.assignment.chatify.core.models.GroupChatModel;
+import com.pucmm.assignment.chatify.core.models.OneToOneChatModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +35,7 @@ public class Home extends AppCompatActivity {
             return insets;
         });
 
-        final List<RecentChatModel> chats = new ArrayList<>();
+        final List<ChatModel> chats = new ArrayList<>();
         // TODO: Session management
         final String userEmail = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser())
                 .getEmail();
@@ -54,7 +56,16 @@ public class Home extends AppCompatActivity {
                 chats.clear();
 
                 value.getDocuments().stream()
-                        .map(doc -> RecentChatModel.fromDocument(userEmail, doc))
+                        .map(doc -> {
+                            String type = doc.getString("type");
+                            assert type != null;
+
+                            if (type.equalsIgnoreCase(ChatModel.groupIdentifier)) {
+                                return GroupChatModel.fromDocument(userEmail, doc);
+                            } else {
+                                return OneToOneChatModel.fromDocument(userEmail, doc);
+                            }
+                        })
                         .forEach(chats::add);
 
                 adapter.notifyDataSetChanged();
