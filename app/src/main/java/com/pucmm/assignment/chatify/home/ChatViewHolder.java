@@ -11,7 +11,7 @@ import com.pucmm.assignment.chatify.R;
 
 public class ChatViewHolder  extends RecyclerView.ViewHolder {
     ImageView imageView;
-    TextView nameView, lastMessageView;
+    TextView nameView, lastMessageView, timestampView;
 
     public ChatViewHolder(@NonNull View itemView) {
         super(itemView);
@@ -20,5 +20,6 @@ public class ChatViewHolder  extends RecyclerView.ViewHolder {
         nameView = itemView.findViewById(R.id.recentChatName);
         lastMessageView = itemView.findViewById(R.id.recentChatLastMessage);
         imageView = itemView.findViewById(R.id.recentChatImageView);
+        timestampView = itemView.findViewById(R.id.recentChatTimestamp);
     }
 }

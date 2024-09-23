@@ -10,26 +10,43 @@
         android:src="@drawable/user"
         android:id="@+id/recentChatImageView"/>
 
-    <TextView
-        android:id="@+id/recentChatName"
-        android:layout_width="match_parent"
+    <RelativeLayout
+        android:id="@+id/recentChatData"
+        android:layout_width="277dp"
         android:layout_height="wrap_content"
-        android:textColor="@color/black"
-        android:layout_toEndOf="@id/recentChatImageView"
-        android:layout_marginStart="15dp"
-        android:layout_marginTop="5dp"
-        android:textSize="16sp"
-        android:text="Name" />
+        android:layout_toEndOf="@id/recentChatImageView">
+
+        <TextView
+            android:id="@+id/recentChatLastMessage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/recentChatName"
+            android:layout_marginStart="15dp"
+            android:text="Lorem ipsum..."
+            android:textColor="@color/light_gray"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/recentChatName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="5dp"
+            android:text="Name"
+            android:textColor="@color/black"
+            android:textSize="16sp" />
+    </RelativeLayout>
 
     <TextView
-        android:id="@+id/recentChatLastMessage"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:id="@+id/recentChatTimestamp"
+        android:layout_width="66dp"
+        android:layout_height="18dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="9dp"
+        android:layout_marginEnd="0dp"
+        android:layout_toEndOf="@id/recentChatData"
+        android:text="10/10/2020"
         android:textColor="@color/light_gray"
-        android:layout_below="@id/recentChatName"
-        android:layout_toEndOf="@id/recentChatImageView"
-        android:layout_marginStart="15dp"
-        android:textSize="13sp"
-        android:text="Lorem ipsum..." />
-
+        android:textSize="12sp" />
 </RelativeLayout>
