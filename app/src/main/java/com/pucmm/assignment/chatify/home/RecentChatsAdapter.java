@@ -8,16 +8,16 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.pucmm.assignment.chatify.R;
-import com.pucmm.assignment.chatify.core.models.ChatModel;
+import com.pucmm.assignment.chatify.core.models.RecentChatModel;
 
 import java.util.List;
 
 
 public class RecentChatsAdapter extends RecyclerView.Adapter<ChatViewHolder> {
     private Context context;
-    private List<ChatModel> chats;
+    private List<RecentChatModel> chats;
 
-    public RecentChatsAdapter(Context context, List<ChatModel> chats) {
+    public RecentChatsAdapter(Context context, List<RecentChatModel> chats) {
         this.context = context;
         this.chats = chats;
     }

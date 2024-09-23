@@ -10,12 +10,17 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.pucmm.assignment.chatify.R;
-import com.pucmm.assignment.chatify.core.models.ChatModel;
+import com.pucmm.assignment.chatify.core.models.RecentChatModel;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Home extends AppCompatActivity {
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,19 +33,31 @@ public class Home extends AppCompatActivity {
             return insets;
         });
 
-        // Temp chats
-        List<ChatModel> chats = List.of(
-                new ChatModel("John Doe", "Hello"),
-                new ChatModel("Jane Doe", "Hi"),
-                new ChatModel("Alice", "Hey"),
-                new ChatModel("Bob", "Hola")
-        );
+        final List<RecentChatModel> chats = new ArrayList<>();
+        // TODO: Session management
+        final String userEmail = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser())
+                .getEmail();
 
         RecyclerView recyclerView = findViewById(R.id.recyclerViewRecentChats);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(new RecentChatsAdapter(
+        RecentChatsAdapter adapter = new RecentChatsAdapter(
                 getApplicationContext(),
                 chats
-        ));
+        );
+        recyclerView.setAdapter(adapter);
+
+        db.collection("conversations")
+            .whereArrayContains("members", userEmail)
+            .addSnapshotListener((value, error) -> {
+                if (error != null || value == null) return;
+
+                chats.clear();
+
+                value.getDocuments().stream()
+                        .map(doc -> RecentChatModel.fromDocument(userEmail, doc))
+                        .forEach(chats::add);
+
+                adapter.notifyDataSetChanged();
+            });
     }
 }
