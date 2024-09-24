@@ -14,6 +14,8 @@ import com.pucmm.assignment.chatify.core.models.ChatModel;
 import com.pucmm.assignment.chatify.core.models.OneToOneChatModel;
 import com.pucmm.assignment.chatify.core.utils.GeneralUtils;
 
+import org.parceler.Parcels;
+
 import java.util.Date;
 import java.util.List;
 
@@ -54,7 +56,7 @@ public class RecentChatsAdapter extends RecyclerView.Adapter<ChatViewHolder> {
         holder.itemView.setOnClickListener(v -> {
             Intent i = new Intent(context.getApplicationContext(), ChatActivity.class);
             i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            i.putExtra("chatId", chat.getId());
+            i.putExtra("chat", Parcels.wrap(chat));
             context.startActivity(i);
         });
     }

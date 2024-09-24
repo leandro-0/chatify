@@ -2,6 +2,8 @@ package com.pucmm.assignment.chatify.chats;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,6 +13,7 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.pucmm.assignment.chatify.R;
 import com.pucmm.assignment.chatify.core.models.ChatModel;
@@ -19,13 +22,15 @@ import com.pucmm.assignment.chatify.core.models.ImageMessageModel;
 import com.pucmm.assignment.chatify.core.models.MessageModel;
 import com.pucmm.assignment.chatify.core.models.OneToOneChatModel;
 import com.pucmm.assignment.chatify.core.models.TextMessageModel;
-import com.pucmm.assignment.chatify.home.RecentChatsAdapter;
+
+import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ChatActivity extends AppCompatActivity {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private String currentUserEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +44,17 @@ public class ChatActivity extends AppCompatActivity {
         });
 
         Intent currIntent = getIntent();
-        String chatId = currIntent.getStringExtra("chatId");
+        ChatModel chat = Parcels.unwrap(currIntent.getParcelableExtra("chat"));
+        final TextView titleView = (TextView) findViewById(R.id.chatName);
+        // TODO: Implement online/offline status
+        final TextView chatStatus = (TextView) findViewById(R.id.chatStatus);
+
+        if (chat instanceof OneToOneChatModel) {
+            titleView.setText(((OneToOneChatModel) chat).getOtherMember(currentUserEmail));
+        } else {
+            chatStatus.setVisibility(View.INVISIBLE);
+            titleView.setText(((GroupChatModel) chat).getTitle());
+        }
 
         final List<MessageModel> messages = new ArrayList<>();
         RecyclerView recyclerView = findViewById(R.id.chatRecyclerView);
@@ -50,7 +65,7 @@ public class ChatActivity extends AppCompatActivity {
         );
         recyclerView.setAdapter(adapter);
 
-        db.collection("conversations").document(chatId).collection("messages")
+        db.collection("conversations").document(chat.getId()).collection("messages")
                 .orderBy("createdAt")
                 .addSnapshotListener((value, error) -> {
                     if (error != null || value == null) return;

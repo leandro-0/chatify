@@ -8,11 +8,13 @@ import java.util.Set;
 public abstract class ChatModel {
     public static String groupIdentifier = "group";
 
-    private final String id;
-    private final String title;
-    private final LastMessageModel lastMessage;
-    private final Timestamp createdAt;
-    private final Set<String> members;
+    private String id;
+    private String title;
+    private LastMessageModel lastMessage;
+    private Timestamp createdAt;
+    private Set<String> members;
+
+    public ChatModel() {}
 
     ChatModel(String id, String title, LastMessageModel lastMessage, Timestamp createdAt, Set<String> members) {
         this.id = id;
