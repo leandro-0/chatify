@@ -15,4 +15,7 @@
     <color name="orange">#FFFFA500</color>
     <color name="brown">#FFA52A2A</color>
     <color name="indigo">#4B0082</color>
+    <color name="lightIndigo">#5A3376</color>
+    <color name="darkerIndigo">#9673AF</color>
+    <color name="lighterIndigo">#D1C4E9</color>
 </resources>
