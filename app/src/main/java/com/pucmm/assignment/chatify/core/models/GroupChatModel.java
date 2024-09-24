@@ -3,15 +3,20 @@ package com.pucmm.assignment.chatify.core.models;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
 
+import org.parceler.Parcel;
+
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+@Parcel
 public class GroupChatModel extends ChatModel {
-    private final Set<String> admins;
-    private final String createdBy;
+    private Set<String> admins;
+    private String createdBy;
+
+    public GroupChatModel() {}
 
     public GroupChatModel(String id, String title, LastMessageModel lastMessage, Timestamp createdAt, Set<String> members, Set<String> admins, String createdBy) {
         super(id, title, lastMessage, createdAt, members);
