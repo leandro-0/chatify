@@ -1,6 +1,7 @@
 package com.pucmm.assignment.chatify.home;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -8,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.pucmm.assignment.chatify.R;
+import com.pucmm.assignment.chatify.chats.ChatActivity;
 import com.pucmm.assignment.chatify.core.models.ChatModel;
 import com.pucmm.assignment.chatify.core.models.OneToOneChatModel;
 import com.pucmm.assignment.chatify.core.utils.GeneralUtils;
@@ -48,6 +50,13 @@ public class RecentChatsAdapter extends RecyclerView.Adapter<ChatViewHolder> {
         holder.timestampView.setText(GeneralUtils.isOlderThanADay(chat.getLastMessage().getTimestamp())
                 ? GeneralUtils.getFormattedDate(messageDate)
                 : GeneralUtils.getTimeIn24HourFormat(messageDate));
+
+        holder.itemView.setOnClickListener(v -> {
+            Intent i = new Intent(context.getApplicationContext(), ChatActivity.class);
+            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            i.putExtra("chatId", chat.getId());
+            context.startActivity(i);
+        });
     }
 
     @Override

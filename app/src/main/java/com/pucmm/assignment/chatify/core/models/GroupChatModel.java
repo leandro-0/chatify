@@ -13,8 +13,8 @@ public class GroupChatModel extends ChatModel {
     private final Set<String> admins;
     private final String createdBy;
 
-    public GroupChatModel(String title, LastMessageModel lastMessage, Timestamp createdAt, Set<String> members, Set<String> admins, String createdBy) {
-        super(title, lastMessage, createdAt, members);
+    public GroupChatModel(String id, String title, LastMessageModel lastMessage, Timestamp createdAt, Set<String> members, Set<String> admins, String createdBy) {
+        super(id, title, lastMessage, createdAt, members);
         this.admins = admins;
         this.createdBy = createdBy;
     }
@@ -32,6 +32,7 @@ public class GroupChatModel extends ChatModel {
         final Set<String> admins = new HashSet<>((List<String>) document.get("admins"));
 
         return new GroupChatModel(
+                document.getId(),
                 document.getString("name"),
                 LastMessageModel.fromMap((Map<String, Object>) document.get("lastMessage")),
                 document.get("createdAt", Timestamp.class),

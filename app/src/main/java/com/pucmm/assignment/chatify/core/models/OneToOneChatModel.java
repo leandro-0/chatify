@@ -10,14 +10,15 @@ import java.util.Map;
 import java.util.Set;
 
 public class OneToOneChatModel extends ChatModel {
-    public OneToOneChatModel(String title, LastMessageModel lastMessage, Timestamp createdAt, Set<String> members) {
-        super(title, lastMessage, createdAt, members);
+    public OneToOneChatModel(String id, String title, LastMessageModel lastMessage, Timestamp createdAt, Set<String> members) {
+        super(id, title, lastMessage, createdAt, members);
     }
 
     public static OneToOneChatModel fromDocument(String currentUserEmail, DocumentSnapshot document) {
         final Set<String> members = new HashSet<>((List<String>) document.get("members"));
 
         return new OneToOneChatModel(
+                document.getId(),
                 members.stream().filter(member -> !member.equals(currentUserEmail))
                         .findFirst().orElse("Unknown"),
                 LastMessageModel.fromMap((Map<String, Object>) document.get("lastMessage")),

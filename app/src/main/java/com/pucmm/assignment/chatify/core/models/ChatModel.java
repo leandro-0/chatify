@@ -8,12 +8,14 @@ import java.util.Set;
 public abstract class ChatModel {
     public static String groupIdentifier = "group";
 
+    private final String id;
     private final String title;
     private final LastMessageModel lastMessage;
     private final Timestamp createdAt;
     private final Set<String> members;
 
-    ChatModel(String title, LastMessageModel lastMessage, Timestamp createdAt, Set<String> members) {
+    ChatModel(String id, String title, LastMessageModel lastMessage, Timestamp createdAt, Set<String> members) {
+        this.id = id;
         this.title = title;
         this.lastMessage = lastMessage;
         this.createdAt = createdAt;
@@ -34,6 +36,10 @@ public abstract class ChatModel {
 
     public Set<String> getMembers() {
         return members;
+    }
+
+    public String getId() {
+        return id;
     }
 
     public static ChatModel fromDocument(String currentUserEmail, DocumentSnapshot document) {
