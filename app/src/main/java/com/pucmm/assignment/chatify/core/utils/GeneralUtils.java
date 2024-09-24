@@ -19,6 +19,12 @@ public class GeneralUtils {
         return timeFormat.format(date);
     }
 
+    // Returns a formatted time string in the format "dd/MM/yyyy HH:mm".
+    public static String getFullFormattedDate(Date date) {
+        SimpleDateFormat timeFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+        return timeFormat.format(date);
+    }
+
     // Checks if a given timestamp is older than a day.
     public static boolean isOlderThanADay(Timestamp timestamp) {
         Date today = new Date(), date = timestamp.toDate();

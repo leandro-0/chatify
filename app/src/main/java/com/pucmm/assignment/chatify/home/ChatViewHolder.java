@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.pucmm.assignment.chatify.R;
 
-public class ChatViewHolder  extends RecyclerView.ViewHolder {
+public class ChatViewHolder extends RecyclerView.ViewHolder {
     ImageView imageView;
     TextView nameView, lastMessageView, timestampView;
 
