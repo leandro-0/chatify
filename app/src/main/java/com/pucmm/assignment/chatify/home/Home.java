@@ -1,9 +1,11 @@
 package com.pucmm.assignment.chatify.home;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -12,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.pucmm.assignment.chatify.MainActivity;
 import com.pucmm.assignment.chatify.R;
 import com.pucmm.assignment.chatify.core.models.ChatModel;
 import com.pucmm.assignment.chatify.core.models.GroupChatModel;
@@ -35,8 +38,10 @@ public class Home extends AppCompatActivity {
             return insets;
         });
 
+        Toolbar toolbar = findViewById(R.id.toolbar);  // Asegúrate de que el ID corresponda a tu layout
+        setSupportActionBar(toolbar);  // Configurar la toolbar como la barra de acción
+
         final List<ChatModel> chats = new ArrayList<>();
-        // TODO: Session management
         final String userEmail = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser())
                 .getEmail();
 
@@ -49,26 +54,47 @@ public class Home extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
 
         db.collection("conversations")
-            .whereArrayContains("members", userEmail)
-            .addSnapshotListener((value, error) -> {
-                if (error != null || value == null) return;
+                .whereArrayContains("members", userEmail)
+                .addSnapshotListener((value, error) -> {
+                    if (error != null || value == null) return;
 
-                chats.clear();
+                    chats.clear();
 
-                value.getDocuments().stream()
-                        .map(doc -> {
-                            String type = doc.getString("type");
-                            assert type != null;
+                    value.getDocuments().stream()
+                            .map(doc -> {
+                                String type = doc.getString("type");
+                                assert type != null;
 
-                            if (type.equalsIgnoreCase(ChatModel.groupIdentifier)) {
-                                return GroupChatModel.fromDocument(userEmail, doc);
-                            } else {
-                                return OneToOneChatModel.fromDocument(userEmail, doc);
-                            }
-                        })
-                        .forEach(chats::add);
+                                if (type.equalsIgnoreCase(ChatModel.groupIdentifier)) {
+                                    return GroupChatModel.fromDocument(userEmail, doc);
+                                } else {
+                                    return OneToOneChatModel.fromDocument(userEmail, doc);
+                                }
+                            })
+                            .forEach(chats::add);
 
-                adapter.notifyDataSetChanged();
-            });
+                    adapter.notifyDataSetChanged();
+                });
     }
+    @Override
+    public boolean onCreateOptionsMenu(android.view.Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(android.view.MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.action_logout) {
+            FirebaseAuth.getInstance().signOut();
+            Intent intent = new Intent(Home.this, MainActivity.class);
+            startActivity(intent);
+            finish();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
 }

@@ -71,4 +71,5 @@ public class ChatActivity extends AppCompatActivity {
                     adapter.notifyDataSetChanged();
                 });
     }
+
 }
