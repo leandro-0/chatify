@@ -3,6 +3,7 @@ package com.pucmm.assignment.chatify.chats;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -22,6 +23,7 @@ import com.pucmm.assignment.chatify.core.models.ImageMessageModel;
 import com.pucmm.assignment.chatify.core.models.MessageModel;
 import com.pucmm.assignment.chatify.core.models.OneToOneChatModel;
 import com.pucmm.assignment.chatify.core.models.TextMessageModel;
+import com.pucmm.assignment.chatify.home.Home;
 
 import org.parceler.Parcels;
 
@@ -43,11 +45,18 @@ public class ChatActivity extends AppCompatActivity {
             return insets;
         });
 
+        ImageView backBtn = findViewById(R.id.backBtn);
+        backBtn.setOnClickListener(view -> {
+            Intent intent = new Intent(ChatActivity.this, Home.class);
+            startActivity(intent);
+            finish();
+        });
+
         Intent currIntent = getIntent();
         ChatModel chat = Parcels.unwrap(currIntent.getParcelableExtra("chat"));
-        final TextView titleView = (TextView) findViewById(R.id.chatName);
-        // TODO: Implement online/offline status
-        final TextView chatStatus = (TextView) findViewById(R.id.chatStatus);
+        final TextView titleView = findViewById(R.id.chatName);
+        // TODO: Implementar el estado online/offline
+        final TextView chatStatus = findViewById(R.id.chatStatus);
 
         if (chat instanceof OneToOneChatModel) {
             titleView.setText(((OneToOneChatModel) chat).getOtherMember(currentUserEmail));
