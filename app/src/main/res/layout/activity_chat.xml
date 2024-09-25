@@ -77,7 +77,7 @@
         android:layout_below="@id/actionBar"
         android:layout_above="@id/inputSection"
         android:layout_margin="5dp"/>
-    
+
     <RelativeLayout
         android:id="@+id/inputSection"
         android:layout_width="match_parent"
@@ -97,6 +97,7 @@
             android:src="@drawable/baseline_image_24" />
 
         <EditText
+            android:id="@+id/messageInput"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_marginLeft="50dp"
