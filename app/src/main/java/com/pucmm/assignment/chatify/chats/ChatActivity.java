@@ -56,25 +56,6 @@ public class ChatActivity extends AppCompatActivity {
         final ImageView sendBtn = (ImageView) findViewById(R.id.sendBtn);
         final EditText messageInput = (EditText) findViewById(R.id.messageInput);
 
-        sendBtn.setOnClickListener(v -> {
-            final String message = messageInput.getText().toString();
-
-            final Map<String, Object> data = MessagesUtils.getMessageData(currentUserEmail, message);
-            db.collection("conversations").document(chat.getId()).collection("messages")
-                    .add(data).addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            messageInput.setText("");
-                        } else {
-                            Snackbar.make(v, "Failed to send the message", Snackbar.LENGTH_SHORT).show();
-                        }
-                    });
-
-            db.collection("conversations").document(chat.getId()).update(
-                    "lastMessage",
-                    MessagesUtils.getLastMessageData(data)
-            );
-        });
-
         if (chat instanceof OneToOneChatModel) {
             titleView.setText(((OneToOneChatModel) chat).getOtherMember(currentUserEmail));
         } else {
@@ -90,6 +71,26 @@ public class ChatActivity extends AppCompatActivity {
                 messages
         );
         recyclerView.setAdapter(adapter);
+
+        sendBtn.setOnClickListener(v -> {
+            final String message = messageInput.getText().toString();
+
+            final Map<String, Object> data = MessagesUtils.getMessageData(currentUserEmail, message);
+            db.collection("conversations").document(chat.getId()).collection("messages")
+                    .add(data).addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            messageInput.setText("");
+                            recyclerView.smoothScrollToPosition(messages.size() - 1);
+                        } else {
+                            Snackbar.make(v, "Failed to send the message", Snackbar.LENGTH_SHORT).show();
+                        }
+                    });
+
+            db.collection("conversations").document(chat.getId()).update(
+                    "lastMessage",
+                    MessagesUtils.getLastMessageData(data)
+            );
+        });
 
         db.collection("conversations").document(chat.getId()).collection("messages")
                 .orderBy("createdAt")
@@ -110,6 +111,7 @@ public class ChatActivity extends AppCompatActivity {
                             })
                             .forEach(messages::add);
                     adapter.notifyDataSetChanged();
+                    recyclerView.smoothScrollToPosition(messages.size() - 1);
                 });
     }
 }
