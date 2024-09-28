@@ -25,6 +25,7 @@ import com.pucmm.assignment.chatify.core.models.ImageMessageModel;
 import com.pucmm.assignment.chatify.core.models.MessageModel;
 import com.pucmm.assignment.chatify.core.models.OneToOneChatModel;
 import com.pucmm.assignment.chatify.core.models.TextMessageModel;
+import com.pucmm.assignment.chatify.home.Home;
 import com.pucmm.assignment.chatify.core.utils.MessagesUtils;
 
 import org.parceler.Parcels;
@@ -46,6 +47,13 @@ public class ChatActivity extends AppCompatActivity {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
+        });
+
+        ImageView backBtn = findViewById(R.id.backBtn);
+        backBtn.setOnClickListener(view -> {
+            Intent intent = new Intent(ChatActivity.this, Home.class);
+            startActivity(intent);
+            finish();
         });
 
         Intent currIntent = getIntent();
@@ -114,4 +122,5 @@ public class ChatActivity extends AppCompatActivity {
                     recyclerView.smoothScrollToPosition(messages.size() - 1);
                 });
     }
+
 }
