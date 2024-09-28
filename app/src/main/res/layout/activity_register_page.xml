@@ -11,15 +11,17 @@
     tools:context=".RegisterPage">
 
     <!-- Logo de la Universidad -->
+
+    <!-- Texto Sign Up -->
+
     <ImageView
         android:id="@+id/logoImage"
         android:layout_width="230dp"
         android:layout_height="230dp"
-        android:src="@drawable/chatify"
         android:layout_gravity="center"
-        android:contentDescription="@string/logo" />
+        android:contentDescription="@string/logo"
+        android:src="@drawable/chatify" />
 
-    <!-- Texto Sign Up -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

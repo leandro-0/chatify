@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:padding="12dp"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:src="@drawable/user"
+        android:id="@+id/recentChatImageView"/>
+
+    <RelativeLayout
+        android:id="@+id/recentChatData"
+        android:layout_width="277dp"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/recentChatImageView">
+
+        <TextView
+            android:id="@+id/recentChatLastMessage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/recentChatName"
+            android:layout_marginStart="15dp"
+            android:text="Lorem ipsum..."
+            android:textColor="@color/light_gray"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/recentChatName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="5dp"
+            android:text="Name"
+            android:textColor="@color/black"
+            android:textSize="16sp" />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/recentChatTimestamp"
+        android:layout_width="66dp"
+        android:layout_height="18dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="9dp"
+        android:layout_marginEnd="0dp"
+        android:layout_toEndOf="@id/recentChatData"
+        android:text="10/10/2020"
+        android:textAlignment="textEnd"
+        android:textColor="@color/light_gray"
+        android:textSize="12sp" />
+</RelativeLayout>
