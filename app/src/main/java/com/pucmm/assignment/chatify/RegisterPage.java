@@ -48,19 +48,44 @@ public class RegisterPage extends AppCompatActivity {
                 finish();
             }
         });
+
+        editTextEmail.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    String email = String.valueOf(editTextEmail.getText());
+                    if (TextUtils.isEmpty(email)) {
+                        editTextEmail.setError("Email is required");
+                    } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                        editTextEmail.setError("Invalid email format");
+                    }
+                }
+            }
+        });
+
+        editTextPassword.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    String password = String.valueOf(editTextPassword.getText());
+                    if (TextUtils.isEmpty(password)) {
+                        editTextPassword.setError("Password is required");
+                    } else if (password.length() < 6) {
+                        editTextPassword.setError("Password must be at least 6 characters");
+                    }
+                }
+            }
+        });
+
         signUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String email, password;
-                email = String.valueOf(editTextEmail.getText());
-                password = String.valueOf(editTextPassword.getText());
+                String email = String.valueOf(editTextEmail.getText());
+                String password = String.valueOf(editTextPassword.getText());
 
-                if (TextUtils.isEmpty(email)) {
-                    Toast.makeText(RegisterPage.this, "Email is required", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                if (TextUtils.isEmpty(password)) {
-                    Toast.makeText(RegisterPage.this, "Password is required", Toast.LENGTH_SHORT).show();
+                if (TextUtils.isEmpty(email) || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches() ||
+                        TextUtils.isEmpty(password) || password.length() < 6) {
+                    Toast.makeText(RegisterPage.this, "Please fix the errors above", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -85,7 +110,6 @@ public class RegisterPage extends AppCompatActivity {
                         } else {
                             Toast.makeText(RegisterPage.this, "Authentication failed", Toast.LENGTH_SHORT).show();
                         }
-
                     }
                 });
             }
