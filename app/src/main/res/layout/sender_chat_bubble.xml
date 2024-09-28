@@ -47,5 +47,12 @@
             android:textSize="12sp"
             android:layout_gravity="end"/>
 
+        <ImageView
+            android:id="@+id/messageImage"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:scaleType="centerCrop"
+            android:visibility="gone" />
+
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

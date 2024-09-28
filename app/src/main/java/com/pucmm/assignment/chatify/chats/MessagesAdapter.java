@@ -2,13 +2,16 @@ package com.pucmm.assignment.chatify.chats;
 
 import android.content.Context;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.pucmm.assignment.chatify.R;
+import com.pucmm.assignment.chatify.core.models.ImageMessageModel;
 import com.pucmm.assignment.chatify.core.models.MessageModel;
 import com.pucmm.assignment.chatify.core.models.TextMessageModel;
 import com.pucmm.assignment.chatify.core.utils.GeneralUtils;
@@ -45,6 +48,13 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesViewHolder> {
         holder.senderNameView.setText(message.getSender());
         if (message instanceof TextMessageModel) {
             holder.messageContentView.setText(((TextMessageModel) message).getContent());
+            holder.messageContentView.setVisibility(View.VISIBLE);
+            holder.messageImageView.setVisibility(View.GONE);
+        } else if (message instanceof ImageMessageModel) {
+            String imageUrl = String.valueOf(((ImageMessageModel) message).getImageUrl());
+            Glide.with(context).load(imageUrl).into(holder.messageImageView);
+            holder.messageImageView.setVisibility(View.VISIBLE);
+            holder.messageContentView.setVisibility(View.GONE);
         }
 
         final Date messageDate = message.getCreatedAt().toDate();

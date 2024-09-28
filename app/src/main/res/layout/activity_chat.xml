@@ -86,7 +86,7 @@
         android:layout_marginBottom="8dp">
 
         <ImageView
-            android:id="@+id/imgBtn"
+            android:id="@+id/uploadImageBtn"
             android:layout_width="26dp"
             android:layout_height="26dp"
             android:layout_alignParentLeft="true"
@@ -95,6 +95,11 @@
             android:layout_marginEnd="20dp"
             app:tint="@color/indigo"
             android:src="@drawable/baseline_image_24" />
+        <ImageView
+            android:id="@+id/messageImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
 
         <EditText
             android:id="@+id/messageInput"
