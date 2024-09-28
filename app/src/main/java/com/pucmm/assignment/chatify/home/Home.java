@@ -2,7 +2,6 @@ package com.pucmm.assignment.chatify.home;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.ImageView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,7 +16,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.pucmm.assignment.chatify.MainActivity;
 import com.pucmm.assignment.chatify.R;
-import com.pucmm.assignment.chatify.chats.ChatActivity;
 import com.pucmm.assignment.chatify.core.models.ChatModel;
 import com.pucmm.assignment.chatify.core.models.GroupChatModel;
 import com.pucmm.assignment.chatify.core.models.OneToOneChatModel;
@@ -98,6 +96,4 @@ public class Home extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
-
 }
