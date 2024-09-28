@@ -3,6 +3,7 @@ package com.pucmm.assignment.chatify.chats;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -14,6 +15,7 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.pucmm.assignment.chatify.R;
@@ -24,11 +26,13 @@ import com.pucmm.assignment.chatify.core.models.MessageModel;
 import com.pucmm.assignment.chatify.core.models.OneToOneChatModel;
 import com.pucmm.assignment.chatify.core.models.TextMessageModel;
 import com.pucmm.assignment.chatify.home.Home;
+import com.pucmm.assignment.chatify.core.utils.MessagesUtils;
 
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class ChatActivity extends AppCompatActivity {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -54,9 +58,11 @@ public class ChatActivity extends AppCompatActivity {
 
         Intent currIntent = getIntent();
         ChatModel chat = Parcels.unwrap(currIntent.getParcelableExtra("chat"));
-        final TextView titleView = findViewById(R.id.chatName);
-        // TODO: Implementar el estado online/offline
-        final TextView chatStatus = findViewById(R.id.chatStatus);
+        final TextView titleView = (TextView) findViewById(R.id.chatName);
+        // TODO: Implement online/offline status
+        final TextView chatStatus = (TextView) findViewById(R.id.chatStatus);
+        final ImageView sendBtn = (ImageView) findViewById(R.id.sendBtn);
+        final EditText messageInput = (EditText) findViewById(R.id.messageInput);
 
         if (chat instanceof OneToOneChatModel) {
             titleView.setText(((OneToOneChatModel) chat).getOtherMember(currentUserEmail));
@@ -73,6 +79,26 @@ public class ChatActivity extends AppCompatActivity {
                 messages
         );
         recyclerView.setAdapter(adapter);
+
+        sendBtn.setOnClickListener(v -> {
+            final String message = messageInput.getText().toString();
+
+            final Map<String, Object> data = MessagesUtils.getMessageData(currentUserEmail, message);
+            db.collection("conversations").document(chat.getId()).collection("messages")
+                    .add(data).addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            messageInput.setText("");
+                            recyclerView.smoothScrollToPosition(messages.size() - 1);
+                        } else {
+                            Snackbar.make(v, "Failed to send the message", Snackbar.LENGTH_SHORT).show();
+                        }
+                    });
+
+            db.collection("conversations").document(chat.getId()).update(
+                    "lastMessage",
+                    MessagesUtils.getLastMessageData(data)
+            );
+        });
 
         db.collection("conversations").document(chat.getId()).collection("messages")
                 .orderBy("createdAt")
@@ -93,6 +119,7 @@ public class ChatActivity extends AppCompatActivity {
                             })
                             .forEach(messages::add);
                     adapter.notifyDataSetChanged();
+                    recyclerView.smoothScrollToPosition(messages.size() - 1);
                 });
     }
 
