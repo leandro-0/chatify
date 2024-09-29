@@ -13,6 +13,7 @@ firebaseAuth = "23.0.0"
 activity = "1.8.0"
 firebaseInappmessaging = "21.0.0"
 playServices = "19.2.0"
+firebaseDatabase = "21.0.0"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -27,6 +28,7 @@ firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version
 activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 firebase-inappmessaging = { group = "com.google.firebase", name = "firebase-inappmessaging", version.ref = "firebaseInappmessaging" }
 play-services = { module = "com.google.android.gms:play-services", version.ref = "playServices" }
+firebase-database = { group = "com.google.firebase", name = "firebase-database", version.ref = "firebaseDatabase" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
