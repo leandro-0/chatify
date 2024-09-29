@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.pucmm.assignment.chatify.MainActivity;
 import com.pucmm.assignment.chatify.R;
 import com.pucmm.assignment.chatify.chats.ChatActivity;
@@ -57,6 +58,7 @@ public class Home extends AppCompatActivity {
 
         db.collection("conversations")
                 .whereArrayContains("members", userEmail)
+                .orderBy("lastMessage.timestamp", Query.Direction.DESCENDING)
                 .addSnapshotListener((value, error) -> {
                     if (error != null || value == null) return;
 
