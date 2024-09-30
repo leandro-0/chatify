@@ -56,5 +56,6 @@ dependencies {
     annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
 
     implementation("org.parceler:parceler-api:1.1.12")
+    implementation("com.google.gms:google-services:4.4.2")
     annotationProcessor("org.parceler:parceler:1.1.12")
 }

@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -87,6 +88,8 @@ public class ChatActivity extends AppCompatActivity {
         } else {
             chatStatus.setVisibility(View.INVISIBLE);
             titleView.setText(((GroupChatModel) chat).getTitle());
+            ImageView pfp = findViewById(R.id.userImage);
+            pfp.setImageResource(R.drawable.group);
         }
 
         recyclerView = findViewById(R.id.chatRecyclerView);
@@ -118,7 +121,7 @@ public class ChatActivity extends AppCompatActivity {
                             })
                             .forEach(messages::add);
                     adapter.notifyDataSetChanged();
-                    recyclerView.smoothScrollToPosition(messages.size() - 1);
+                    if (!messages.isEmpty()) recyclerView.smoothScrollToPosition(messages.size() - 1);
                 });
     }
 

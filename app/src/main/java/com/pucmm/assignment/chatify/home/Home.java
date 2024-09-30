@@ -2,7 +2,6 @@ package com.pucmm.assignment.chatify.home;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.ImageView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,12 +12,15 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.pucmm.assignment.chatify.MainActivity;
 import com.pucmm.assignment.chatify.R;
-import com.pucmm.assignment.chatify.chats.ChatActivity;
+import com.pucmm.assignment.chatify.search_people.SearchPeople;
 import com.pucmm.assignment.chatify.core.models.ChatModel;
 import com.pucmm.assignment.chatify.core.models.GroupChatModel;
 import com.pucmm.assignment.chatify.core.models.OneToOneChatModel;
@@ -28,7 +30,10 @@ import java.util.List;
 import java.util.Objects;
 
 public class Home extends AppCompatActivity {
+    private EventListener<QuerySnapshot> listener;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private String userEmail = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser())
+            .getEmail();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,12 +46,16 @@ public class Home extends AppCompatActivity {
             return insets;
         });
 
+        FloatingActionButton newChatButton = findViewById(R.id.floatingActionButton);
+        newChatButton.setOnClickListener(v -> {
+            Intent intent = new Intent(Home.this, SearchPeople.class);
+            startActivity(intent);
+        });
+
         Toolbar toolbar = findViewById(R.id.toolbar);  // Asegúrate de que el ID corresponda a tu layout
         setSupportActionBar(toolbar);  // Configurar la toolbar como la barra de acción
 
         final List<ChatModel> chats = new ArrayList<>();
-        final String userEmail = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser())
-                .getEmail();
 
         RecyclerView recyclerView = findViewById(R.id.recyclerViewRecentChats);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -56,29 +65,31 @@ public class Home extends AppCompatActivity {
         );
         recyclerView.setAdapter(adapter);
 
+        listener = (value, error) -> {
+            if (error != null || value == null) return;
+
+            chats.clear();
+
+            value.getDocuments().stream()
+                    .map(doc -> {
+                        String type = doc.getString("type");
+                        assert type != null;
+
+                        if (type.equalsIgnoreCase(ChatModel.groupIdentifier)) {
+                            return GroupChatModel.fromDocument(userEmail, doc);
+                        } else {
+                            return OneToOneChatModel.fromDocument(userEmail, doc);
+                        }
+                    })
+                    .forEach(chats::add);
+
+            adapter.notifyDataSetChanged();
+        };
+
         db.collection("conversations")
                 .whereArrayContains("members", userEmail)
                 .orderBy("lastMessage.timestamp", Query.Direction.DESCENDING)
-                .addSnapshotListener((value, error) -> {
-                    if (error != null || value == null) return;
-
-                    chats.clear();
-
-                    value.getDocuments().stream()
-                            .map(doc -> {
-                                String type = doc.getString("type");
-                                assert type != null;
-
-                                if (type.equalsIgnoreCase(ChatModel.groupIdentifier)) {
-                                    return GroupChatModel.fromDocument(userEmail, doc);
-                                } else {
-                                    return OneToOneChatModel.fromDocument(userEmail, doc);
-                                }
-                            })
-                            .forEach(chats::add);
-
-                    adapter.notifyDataSetChanged();
-                });
+                .addSnapshotListener(listener);
     }
     @Override
     public boolean onCreateOptionsMenu(android.view.Menu menu) {
@@ -101,5 +112,13 @@ public class Home extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
 
+        db.collection("conversations")
+                .whereArrayContains("members", userEmail)
+                .orderBy("lastMessage.timestamp", Query.Direction.DESCENDING)
+                .addSnapshotListener(listener);
+    }
 }
