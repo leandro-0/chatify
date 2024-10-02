@@ -14,10 +14,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.pucmm.assignment.chatify.MainActivity;
 import com.pucmm.assignment.chatify.R;
 import com.pucmm.assignment.chatify.search_people.SearchPeople;
@@ -71,26 +73,26 @@ public class Home extends AppCompatActivity {
             chats.clear();
 
             value.getDocuments().stream()
-                    .map(doc -> {
-                        String type = doc.getString("type");
-                        assert type != null;
-
-                        if (type.equalsIgnoreCase(ChatModel.groupIdentifier)) {
-                            return GroupChatModel.fromDocument(userEmail, doc);
-                        } else {
-                            return OneToOneChatModel.fromDocument(userEmail, doc);
-                        }
-                    })
+                    .map(doc -> transformDocumentToChat(userEmail, doc))
                     .forEach(chats::add);
 
             adapter.notifyDataSetChanged();
         };
 
-        db.collection("conversations")
-                .whereArrayContains("members", userEmail)
-                .orderBy("lastMessage.timestamp", Query.Direction.DESCENDING)
-                .addSnapshotListener(listener);
+        createRecentChatsListener();
     }
+
+    public static ChatModel transformDocumentToChat(String userEmail, DocumentSnapshot doc) {
+        String type = doc.getString("type");
+        assert type != null;
+
+        if (type.equalsIgnoreCase(ChatModel.groupIdentifier)) {
+            return GroupChatModel.fromDocument(userEmail, doc);
+        } else {
+            return OneToOneChatModel.fromDocument(userEmail, doc);
+        }
+    }
+
     @Override
     public boolean onCreateOptionsMenu(android.view.Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
@@ -102,10 +104,15 @@ public class Home extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.action_logout) {
-            FirebaseAuth.getInstance().signOut();
-            Intent intent = new Intent(Home.this, MainActivity.class);
-            startActivity(intent);
-            finish();
+            FirebaseMessaging.getInstance().deleteToken().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    FirebaseAuth.getInstance().signOut();
+                    Intent intent = new Intent(Home.this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
+            });
+
             return true;
         }
 
@@ -115,7 +122,10 @@ public class Home extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        createRecentChatsListener();
+    }
 
+    void createRecentChatsListener() {
         db.collection("conversations")
                 .whereArrayContains("members", userEmail)
                 .orderBy("lastMessage.timestamp", Query.Direction.DESCENDING)
