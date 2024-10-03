@@ -33,6 +33,20 @@ android {
     buildFeatures {
         viewBinding = true
     }
+
+    packaging {
+        resources {
+            excludes += "/META-INF/INDEX.LIST"
+            excludes += "/META-INF/DEPENDENCIES"
+            excludes += "META-INF/LICENSE"
+            excludes += "META-INF/license.txt"
+            excludes += "META-INF/LICENSE.txt"
+            excludes += "META-INF/NOTICE"
+            excludes += "META-INF/NOTICE.txt"
+            excludes += "META-INF/notice.txt"
+            excludes += "META-INF/ASL2.0"
+        }
+    }
 }
 
 dependencies {
@@ -59,4 +73,6 @@ dependencies {
     implementation("org.parceler:parceler-api:1.1.12")
     implementation("com.google.gms:google-services:4.4.2")
     annotationProcessor("org.parceler:parceler:1.1.12")
+    implementation("com.google.auth:google-auth-library-oauth2-http:0.26.0")
+    implementation("com.squareup.okhttp3:okhttp:5.0.0-alpha.12")
 }
