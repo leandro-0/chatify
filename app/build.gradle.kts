@@ -73,6 +73,8 @@ dependencies {
     implementation("org.parceler:parceler-api:1.1.12")
     implementation("com.google.gms:google-services:4.4.2")
     annotationProcessor("org.parceler:parceler:1.1.12")
+
+    implementation("io.getstream:photoview:1.0.2")
     implementation("com.google.auth:google-auth-library-oauth2-http:0.26.0")
     implementation("com.squareup.okhttp3:okhttp:5.0.0-alpha.12")
 }
