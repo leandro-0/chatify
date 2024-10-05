@@ -27,6 +27,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -37,6 +38,7 @@ import com.pucmm.assignment.chatify.core.models.ImageMessageModel;
 import com.pucmm.assignment.chatify.core.models.MessageModel;
 import com.pucmm.assignment.chatify.core.models.OneToOneChatModel;
 import com.pucmm.assignment.chatify.core.models.TextMessageModel;
+import com.pucmm.assignment.chatify.core.utils.GeneralUtils;
 import com.pucmm.assignment.chatify.home.Home;
 import com.pucmm.assignment.chatify.core.utils.MessagesUtils;
 import com.pucmm.assignment.chatify.GroupDescriptionActivity;
@@ -46,6 +48,11 @@ import org.parceler.Parcels;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
 
 public class ChatActivity extends AppCompatActivity {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -57,6 +64,8 @@ public class ChatActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private MessagesAdapter adapter;
     private ChatModel chat;
+    private List<String> fmcTokens = new ArrayList<>();
+    private String myFCMToken;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +103,8 @@ public class ChatActivity extends AppCompatActivity {
         } else if (chat instanceof GroupChatModel) {
             titleView.setText(((GroupChatModel) chat).getTitle());
             chatStatus.setVisibility(View.INVISIBLE);
+            ImageView pfp = findViewById(R.id.userImage);
+            pfp.setImageResource(R.drawable.group);
         }
 
         titleView.setOnClickListener(v -> {
@@ -116,6 +127,19 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
+        db.collection("users").whereIn("email", new ArrayList(chat.getMembers()))
+                .get().addOnSuccessListener(queryDocumentSnapshots -> {
+                    for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
+                        String token = document.getString("fcmToken");
+                        if (token == null || token.isEmpty()) continue;
+                        if (currentUserEmail.equals(document.getString("email"))) {
+                            myFCMToken = token;
+                        } else {
+                            fmcTokens.add(token);
+                        }
+                    }
+                });
+
         db.collection("conversations").document(chat.getId()).collection("messages")
                 .orderBy("createdAt")
                 .addSnapshotListener((value, error) -> {
@@ -133,7 +157,7 @@ public class ChatActivity extends AppCompatActivity {
                             })
                             .forEach(messages::add);
                     adapter.notifyDataSetChanged();
-                    recyclerView.smoothScrollToPosition(messages.size() - 1);
+                    if (!messages.isEmpty()) recyclerView.smoothScrollToPosition(messages.size() - 1);
                 });
 
         if (chat instanceof OneToOneChatModel) {
@@ -210,6 +234,8 @@ public class ChatActivity extends AppCompatActivity {
                         // Clear the EditText after sending the message
                         EditText messageInput = findViewById(R.id.messageInput);
                         messageInput.setText("");
+
+                        sendNotifications(content);
                     } else {
                         Snackbar.make(findViewById(R.id.chatPage), "Failed to send the message", Snackbar.LENGTH_SHORT).show();
                     }
@@ -219,5 +245,54 @@ public class ChatActivity extends AppCompatActivity {
                 "lastMessage",
                 MessagesUtils.getLastMessageData(data)
         );
+    }
+
+    private void sendNotifications(String message) {
+        if (fmcTokens.isEmpty()) return;
+
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    String token = GeneralUtils.getAccessToken();
+                    OkHttpClient client = new OkHttpClient();
+                    String title = chat instanceof OneToOneChatModel
+                            ? currentUserEmail
+                            : currentUserEmail + " | " + ((GroupChatModel) chat).getTitle();
+                    String msg = message.startsWith("http") ? "\uD83D\uDDBC\uFE0F Image" : message;
+
+                    for (final String fcmToken : fmcTokens) {
+                        String json = "{\n" +
+                                "  \"message\": {\n" +
+                                "    \"token\": \"" + fcmToken + "\",\n" +
+                                "    \"notification\": {\n" +
+                                "      \"title\": \"" + title + "\",\n" +
+                                "      \"body\": \"" + msg + "\"\n" +
+                                "    },\n" +
+                                "    \"data\": {\n" +
+                                "      \"chatId\": \"" + chat.getId() + "\"\n" +
+                                "    }\n" +
+                                "  }\n" +
+                                "}";
+
+                        RequestBody body = RequestBody.create(
+                                json,
+                                MediaType.parse("application/json; charset=utf-8")
+                        );
+
+                        client.newCall(new Request.Builder()
+                                .url("https://fcm.googleapis.com/v1/projects/chatify-bb8e6/messages:send")
+                                .header("Authorization", "Bearer " + token)
+                                .addHeader("Content-Type", "application/json; UTF-8")
+                                .post(body)
+                                .build()).execute();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        thread.start();
     }
 }

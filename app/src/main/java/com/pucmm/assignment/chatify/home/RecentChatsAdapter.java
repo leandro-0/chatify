@@ -43,15 +43,21 @@ public class RecentChatsAdapter extends RecyclerView.Adapter<ChatViewHolder> {
     public void onBindViewHolder(@NonNull ChatViewHolder holder, int position) {
         final ChatModel chat = chats.get(position);
         holder.nameView.setText(chat.getTitle());
-        holder.lastMessageView.setText(chat.getLastMessage().getContent());
+        if (chat.getLastMessage() != null) {
+            holder.lastMessageView.setText(chat.getLastMessage().getContent());
+
+            final Date messageDate = chat.getLastMessage().getTimestamp().toDate();
+            holder.timestampView.setText(GeneralUtils.isOlderThanADay(chat.getLastMessage().getTimestamp())
+                    ? GeneralUtils.getFormattedDate(messageDate)
+                    : GeneralUtils.getTimeIn24HourFormat(messageDate));
+        } else {
+            holder.lastMessageView.setText("");
+            holder.timestampView.setText("");
+        }
+
         holder.imageView.setImageResource(chat instanceof OneToOneChatModel
                 ? R.drawable.user
                 : R.drawable.group);
-
-        final Date messageDate = chat.getLastMessage().getTimestamp().toDate();
-        holder.timestampView.setText(GeneralUtils.isOlderThanADay(chat.getLastMessage().getTimestamp())
-                ? GeneralUtils.getFormattedDate(messageDate)
-                : GeneralUtils.getTimeIn24HourFormat(messageDate));
 
         holder.itemView.setOnClickListener(v -> {
             Intent i = new Intent(context.getApplicationContext(), ChatActivity.class);

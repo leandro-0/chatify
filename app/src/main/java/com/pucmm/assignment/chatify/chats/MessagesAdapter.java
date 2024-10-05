@@ -50,10 +50,12 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesViewHolder> {
             holder.messageContentView.setText(((TextMessageModel) message).getContent());
             holder.messageContentView.setVisibility(View.VISIBLE);
             holder.messageImageView.setVisibility(View.GONE);
+            if (holder.messageCardView != null) holder.messageCardView.setVisibility(View.GONE);
         } else if (message instanceof ImageMessageModel) {
             String imageUrl = String.valueOf(((ImageMessageModel) message).getImageUrl());
             Glide.with(context).load(imageUrl).into(holder.messageImageView);
             holder.messageImageView.setVisibility(View.VISIBLE);
+            if (holder.messageCardView != null) holder.messageCardView.setVisibility(View.VISIBLE);
             holder.messageContentView.setVisibility(View.GONE);
         }
 
