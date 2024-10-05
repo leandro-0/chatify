@@ -15,13 +15,15 @@ import java.util.Set;
 public class GroupChatModel extends ChatModel {
     private Set<String> admins;
     private String createdBy;
+    private String imageUrl;
 
     public GroupChatModel() {}
 
-    public GroupChatModel(String id, String title, LastMessageModel lastMessage, Timestamp createdAt, Set<String> members, Set<String> admins, String createdBy) {
+    public GroupChatModel(String id, String title, LastMessageModel lastMessage, Timestamp createdAt, Set<String> members, Set<String> admins, String createdBy, String imageUrl) {
         super(id, title, lastMessage, createdAt, members);
         this.admins = admins;
         this.createdBy = createdBy;
+        this.imageUrl = imageUrl;
     }
 
     public Set<String> getAdmins() {
@@ -30,6 +32,10 @@ public class GroupChatModel extends ChatModel {
 
     public String getCreatedBy() {
         return createdBy;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
     }
 
     public static GroupChatModel fromDocument(String currentUserEmail, DocumentSnapshot document) {
@@ -43,7 +49,8 @@ public class GroupChatModel extends ChatModel {
                 document.get("createdAt", Timestamp.class),
                 members,
                 admins,
-                document.getString("createdBy")
+                document.getString("createdBy"),
+                document.getString("imageUrl")
         );
     }
 }

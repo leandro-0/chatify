@@ -41,6 +41,7 @@ import com.pucmm.assignment.chatify.core.models.TextMessageModel;
 import com.pucmm.assignment.chatify.core.utils.GeneralUtils;
 import com.pucmm.assignment.chatify.home.Home;
 import com.pucmm.assignment.chatify.core.utils.MessagesUtils;
+import com.pucmm.assignment.chatify.GroupDescriptionActivity;
 
 import org.parceler.Parcels;
 
@@ -98,12 +99,21 @@ public class ChatActivity extends AppCompatActivity {
 
         if (chat instanceof OneToOneChatModel) {
             titleView.setText(((OneToOneChatModel) chat).getOtherMember(currentUserEmail));
-        } else {
-            chatStatus.setVisibility(View.INVISIBLE);
+            chatStatus.setVisibility(View.VISIBLE);
+        } else if (chat instanceof GroupChatModel) {
             titleView.setText(((GroupChatModel) chat).getTitle());
+            chatStatus.setVisibility(View.INVISIBLE);
             ImageView pfp = findViewById(R.id.userImage);
             pfp.setImageResource(R.drawable.group);
         }
+
+        titleView.setOnClickListener(v -> {
+            if (chat instanceof GroupChatModel) {
+                Intent intent = new Intent(ChatActivity.this, GroupDescriptionActivity.class);
+                intent.putExtra("groupChat", Parcels.wrap((GroupChatModel) chat));
+                startActivity(intent);
+            }
+        });
 
         recyclerView = findViewById(R.id.chatRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -149,25 +159,28 @@ public class ChatActivity extends AppCompatActivity {
                     adapter.notifyDataSetChanged();
                     if (!messages.isEmpty()) recyclerView.smoothScrollToPosition(messages.size() - 1);
                 });
-        final TextView chatStatusView = findViewById(R.id.chatStatus);
-        String otherUserEmail = ((OneToOneChatModel) chat).getOtherMember(currentUserEmail);
-        DatabaseReference userStatusRef = FirebaseDatabase.getInstance()
-                .getReference("users").child(otherUserEmail.replace(".", ",")).child("status");
 
-        userStatusRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                String status = snapshot.getValue(String.class);
-                if (status != null) {
-                    chatStatus.setText(status.equals("online") ? "Online" : "Offline");
+        if (chat instanceof OneToOneChatModel) {
+            final TextView chatStatusView = findViewById(R.id.chatStatus);
+            String otherUserEmail = ((OneToOneChatModel) chat).getOtherMember(currentUserEmail);
+            DatabaseReference userStatusRef = FirebaseDatabase.getInstance()
+                    .getReference("users").child(otherUserEmail.replace(".", ",")).child("status");
+
+            userStatusRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    String status = snapshot.getValue(String.class);
+                    if (status != null) {
+                        chatStatus.setText(status.equals("online") ? "Online" : "Offline");
+                    }
                 }
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
 
-            }
-        });
+                }
+            });
+        }
     }
 
     private void openFileChooser() {
