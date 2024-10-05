@@ -22,6 +22,8 @@ import android.widget.Button;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -32,6 +34,7 @@ import com.pucmm.assignment.chatify.home.Home;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.Objects;
 import org.parceler.Parcels;
 
 public class MainActivity extends AppCompatActivity {
@@ -69,13 +72,10 @@ public class MainActivity extends AppCompatActivity {
         signIn = findViewById(R.id.sign_in);
         signUp = findViewById(R.id.sign_up);
 
-        signUp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, RegisterPage.class);
-                startActivity(intent);
-                finish();
-            }
+        signUp.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, RegisterPage.class);
+            startActivity(intent);
+            finish();
         });
 
         signIn.setOnClickListener(new View.OnClickListener() {
@@ -106,6 +106,25 @@ public class MainActivity extends AppCompatActivity {
                         }
                 });
             }
+
+            firebaseAuth.signInWithEmailAndPassword(email, password)
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            String currentUserEmail = Objects.requireNonNull(firebaseAuth.getCurrentUser()).getEmail();
+                            DatabaseReference userStatusRef = FirebaseDatabase.getInstance()
+                                    .getReference("users").child(currentUserEmail.replace(".", ",")).child("status");
+
+                            userStatusRef.setValue("online");
+
+                            Toast.makeText(MainActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(MainActivity.this, Home.class);
+                            startActivity(intent);
+                            finish();
+                        } else {
+                            Snackbar.make(v, "Authentication Failed", Snackbar.LENGTH_SHORT).show();
+                        }
+                    });
+
         });
     }
     @Override

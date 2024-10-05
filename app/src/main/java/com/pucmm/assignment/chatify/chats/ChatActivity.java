@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -21,6 +22,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
@@ -143,6 +149,25 @@ public class ChatActivity extends AppCompatActivity {
                     adapter.notifyDataSetChanged();
                     if (!messages.isEmpty()) recyclerView.smoothScrollToPosition(messages.size() - 1);
                 });
+        final TextView chatStatusView = findViewById(R.id.chatStatus);
+        String otherUserEmail = ((OneToOneChatModel) chat).getOtherMember(currentUserEmail);
+        DatabaseReference userStatusRef = FirebaseDatabase.getInstance()
+                .getReference("users").child(otherUserEmail.replace(".", ",")).child("status");
+
+        userStatusRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String status = snapshot.getValue(String.class);
+                if (status != null) {
+                    chatStatus.setText(status.equals("online") ? "Online" : "Offline");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     private void openFileChooser() {
