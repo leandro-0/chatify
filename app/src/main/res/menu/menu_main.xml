@@ -1,10 +1,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.pucmm.assignment.chatify.MainActivity">
+    tools:context="com.pucmm.assignment.chatify.home.Home">
+
+    <!-- Nuevo elemento para "Cerrar sesión" -->
     <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:title="@string/action_settings"
+        android:id="@+id/action_logout"
+        android:title="@string/cerrar_sesi_n"
+        android:orderInCategory="200"
         app:showAsAction="never" />
 </menu>

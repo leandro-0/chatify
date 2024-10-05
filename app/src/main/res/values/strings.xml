@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Chatify</string>
+    <string name="app_name"></string>
     <string name="action_settings">Settings</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
@@ -43,4 +43,12 @@
         libero vel nunc consequat, quis tincidunt nisl eleifend. Cras bibendum enim a justo luctus
         vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
     </string>
+    <string name="no_account">No account?</string>
+    <string name="sign_up">Sign up</string>
+    <string name="log_in">Log in</string>
+    <string name="password">Password</string>
+    <string name="email">Email</string>
+    <string name="logo">Logo</string>
+    <string name="chats">Chats</string>
+    <string name="cerrar_sesi_n">Cerrar sesión</string>
 </resources>
