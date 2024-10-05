@@ -43,6 +43,7 @@ public class RecentChatsAdapter extends RecyclerView.Adapter<ChatViewHolder> {
     public void onBindViewHolder(@NonNull ChatViewHolder holder, int position) {
         final ChatModel chat = chats.get(position);
         holder.nameView.setText(chat.getTitle());
+
         if (chat.getLastMessage() != null) {
             holder.lastMessageView.setText(chat.getLastMessage().getContent());
 
@@ -51,7 +52,7 @@ public class RecentChatsAdapter extends RecyclerView.Adapter<ChatViewHolder> {
                     ? GeneralUtils.getFormattedDate(messageDate)
                     : GeneralUtils.getTimeIn24HourFormat(messageDate));
         } else {
-            holder.lastMessageView.setText("");
+            holder.lastMessageView.setText("No messages yet");
             holder.timestampView.setText("");
         }
 

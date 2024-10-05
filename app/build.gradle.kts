@@ -70,7 +70,7 @@ dependencies {
     implementation("com.github.bumptech.glide:glide:4.12.0")
     annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
     implementation("com.google.firebase:firebase-messaging")
-
+    implementation ("com.google.firebase:firebase-auth:23.0.0")
     implementation("org.parceler:parceler-api:1.1.12")
     implementation("com.google.gms:google-services:4.4.2")
     annotationProcessor("org.parceler:parceler:1.1.12")

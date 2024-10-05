@@ -50,16 +50,15 @@ public class Home extends AppCompatActivity {
             return insets;
         });
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);  // Asegúrate de que el ID corresponda a tu layout
+        setSupportActionBar(toolbar);  // Configurar la toolbar como la barra de acción
+        
         FloatingActionButton newChatButton = findViewById(R.id.floatingActionButton);
         newChatButton.setOnClickListener(v -> {
             Intent intent = new Intent(Home.this, SearchPeople.class);
             startActivity(intent);
         });
 
-        Toolbar toolbar = findViewById(R.id.toolbar);  // Asegúrate de que el ID corresponda a tu layout
-        setSupportActionBar(toolbar);  // Configurar la toolbar como la barra de acción
 
         final List<ChatModel> chats = new ArrayList<>();
 

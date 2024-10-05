@@ -249,7 +249,8 @@ public class SearchPeople extends AppCompatActivity {
                                             Timestamp.now(),
                                             new HashSet<>((List) data.get("members")),
                                             new HashSet<>(List.of(currUserEmail)),
-                                            currUserEmail
+                                            currUserEmail,
+                                            null
                                     );
 
                                     Intent i = new Intent(SearchPeople.this, ChatActivity.class);

@@ -40,13 +40,10 @@ import org.parceler.Parcels;
 public class MainActivity extends AppCompatActivity {
 
     TextInputEditText editTextEmail, editTextPassword;
-
     Button signIn;
-
     TextView signUp;
 
     FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-
     FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     private final ActivityResultLauncher<String> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.RequestPermission(), result -> {
@@ -84,7 +81,6 @@ public class MainActivity extends AppCompatActivity {
                 String email, password;
                 email = String.valueOf(editTextEmail.getText());
                 password = String.valueOf(editTextPassword.getText());
-
                 if (TextUtils.isEmpty(email)) {
                     Toast.makeText(MainActivity.this, "Email is required", Toast.LENGTH_SHORT).show();
                     return;
@@ -95,38 +91,26 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 firebaseAuth.signInWithEmailAndPassword(email, password)
-                    .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
+                        .addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
-                                registerFMCToken(email);
+                                String currentUserEmail = Objects.requireNonNull(firebaseAuth.getCurrentUser()).getEmail();
+                                DatabaseReference userStatusRef = FirebaseDatabase.getInstance()
+                                        .getReference("users").child(currentUserEmail.replace(".", ",")).child("status");
+
+                                userStatusRef.setValue("online");
+
+                                Toast.makeText(MainActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(MainActivity.this, Home.class);
+                                startActivity(intent);
+                                finish();
                             } else {
                                 Snackbar.make(v, "Authentication Failed", Snackbar.LENGTH_SHORT).show();
                             }
-                        }
-                });
+                        });
             }
-
-            firebaseAuth.signInWithEmailAndPassword(email, password)
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            String currentUserEmail = Objects.requireNonNull(firebaseAuth.getCurrentUser()).getEmail();
-                            DatabaseReference userStatusRef = FirebaseDatabase.getInstance()
-                                    .getReference("users").child(currentUserEmail.replace(".", ",")).child("status");
-
-                            userStatusRef.setValue("online");
-
-                            Toast.makeText(MainActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(MainActivity.this, Home.class);
-                            startActivity(intent);
-                            finish();
-                        } else {
-                            Snackbar.make(v, "Authentication Failed", Snackbar.LENGTH_SHORT).show();
-                        }
-                    });
-
         });
     }
+
     @Override
     protected void onStart() {
         super.onStart();

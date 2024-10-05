@@ -4,10 +4,10 @@
     <selectionStates>
       <SelectionState runConfigName="app">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2024-09-29T02:47:05.767567100Z">
+        <DropdownSelection timestamp="2024-10-05T02:24:25.245371400Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\steve\.android\avd\Nexus_5X_API_35.avd" />
+              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\steve\.android\avd\Nexus_7_API_35.avd" />
             </handle>
           </Target>
         </DropdownSelection>
@@ -15,12 +15,12 @@
           <targets>
             <Target type="DEFAULT_BOOT">
               <handle>
-                <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\steve\.android\avd\Copy_of_Nexus_5X_API_35.avd" />
+                <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\steve\.android\avd\Nexus_5X_API_35.avd" />
               </handle>
             </Target>
             <Target type="DEFAULT_BOOT">
               <handle>
-                <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\steve\.android\avd\Nexus_5X_API_35.avd" />
+                <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\steve\.android\avd\Copy_of_Nexus_5X_API_35.avd" />
               </handle>
             </Target>
           </targets>
