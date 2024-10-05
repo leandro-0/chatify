@@ -3,10 +3,12 @@ package com.pucmm.assignment.chatify.core.models;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
 
+import java.util.Map;
 import java.util.Set;
 
 public abstract class ChatModel {
     public static String groupIdentifier = "group";
+    public static String oneToOneIdentifier = "private";
 
     private String id;
     private String title;

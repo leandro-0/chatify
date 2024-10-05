@@ -1,8 +1,12 @@
 package com.pucmm.assignment.chatify.core.utils;
 
+import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.Timestamp;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -33,5 +37,20 @@ public class GeneralUtils {
         cal.add(Calendar.DAY_OF_YEAR, 1);
 
         return today.after(cal.getTime());
+    }
+
+    // Returns the access token for the Firebase Messaging API
+    public static String getAccessToken() throws IOException {
+        final String MESSAGING_SCOPE = "https://www.googleapis.com/auth/firebase.messaging";
+        final String[] SCOPES = { MESSAGING_SCOPE };
+
+        InputStream serviceAccountStream = GeneralUtils.class
+                .getClassLoader().getResourceAsStream("service-account.json");
+        GoogleCredentials googleCredentials = GoogleCredentials
+                .fromStream(serviceAccountStream)
+                .createScoped(Arrays.asList(SCOPES));
+        googleCredentials.refreshIfExpired();
+
+        return googleCredentials.getAccessToken().getTokenValue();
     }
 }

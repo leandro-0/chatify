@@ -28,6 +28,8 @@ public class LastMessageModel {
     }
 
     public static LastMessageModel fromMap(Map<String, Object> data) {
+        if (data == null) return null;
+
         return new LastMessageModel(
                 (String) data.get("content"),
                 (Timestamp) data.get("timestamp")
