@@ -23,17 +23,6 @@
             android:layout_gravity="center"
             android:contentDescription="@string/logo" />
 
-        <!-- Texto Log in -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/log_in"
-            android:textSize="24sp"
-            android:textColor="@color/gray"
-            android:layout_marginTop="20dp"
-            android:layout_gravity="center"
-            android:textStyle="bold" />
-
         <!-- Texto Email -->
         <TextView
             android:layout_width="match_parent"
@@ -116,7 +105,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="31dp"
                 android:layout_marginStart="10dp"
-                android:text="Sign In"
+                android:text="Sign up"
                 android:textColor="@color/indigo"
                 android:textSize="15sp"
                 android:textStyle="bold" />
