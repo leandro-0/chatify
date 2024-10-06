@@ -30,6 +30,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.pucmm.assignment.chatify.chats.ChatActivity;
 import com.pucmm.assignment.chatify.core.models.ChatModel;
+import com.pucmm.assignment.chatify.core.utils.UserStatus;
+import com.pucmm.assignment.chatify.core.utils.UserStatusUtils;
 import com.pucmm.assignment.chatify.home.Home;
 
 import android.widget.EditText;
@@ -101,16 +103,12 @@ public class MainActivity extends AppCompatActivity {
                 firebaseAuth.signInWithEmailAndPassword(email, password)
                         .addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
-                                String currentUserEmail = Objects.requireNonNull(firebaseAuth.getCurrentUser()).getEmail();
-                                DatabaseReference userStatusRef = FirebaseDatabase.getInstance()
-                                        .getReference("users").child(currentUserEmail.replace(".", ",")).child("status");
-
-                                userStatusRef.setValue("online");
-
-                                Toast.makeText(MainActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
-                                Intent intent = new Intent(MainActivity.this, Home.class);
-                                startActivity(intent);
-                                finish();
+                                UserStatusUtils.markUserStatus(UserStatus.ONLINE, ignore -> {
+                                    Toast.makeText(MainActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
+                                    Intent intent = new Intent(MainActivity.this, Home.class);
+                                    startActivity(intent);
+                                    finish();
+                                });
                             } else {
                                 Snackbar.make(v, "Authentication Failed", Snackbar.LENGTH_SHORT).show();
                             }

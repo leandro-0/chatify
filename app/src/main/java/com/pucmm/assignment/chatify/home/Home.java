@@ -25,6 +25,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.pucmm.assignment.chatify.MainActivity;
 import com.pucmm.assignment.chatify.R;
+import com.pucmm.assignment.chatify.core.utils.UserStatus;
+import com.pucmm.assignment.chatify.core.utils.UserStatusUtils;
 import com.pucmm.assignment.chatify.search_people.SearchPeople;
 import com.pucmm.assignment.chatify.core.models.ChatModel;
 import com.pucmm.assignment.chatify.core.models.GroupChatModel;
@@ -111,16 +113,13 @@ public class Home extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.action_logout) {
-            String currentUserEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
-            DatabaseReference userStatusRef = FirebaseDatabase.getInstance()
-                    .getReference("users").child(currentUserEmail.replace(".", ",")).child("status");
-
-            userStatusRef.setValue("offline").addOnCompleteListener(task -> {
+            UserStatusUtils.markUserStatus(UserStatus.OFFLINE, task -> {
                 FirebaseAuth.getInstance().signOut();
                 Intent intent = new Intent(Home.this, MainActivity.class);
                 startActivity(intent);
                 finish();
             });
+
             FirebaseMessaging.getInstance().deleteToken().addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     FirebaseAuth.getInstance().signOut();
@@ -143,25 +142,7 @@ public class Home extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-
-        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
-            String currentUserEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
-            DatabaseReference userStatusRef = FirebaseDatabase.getInstance()
-                    .getReference("users").child(currentUserEmail.replace(".", ",")).child("status");
-
-            userStatusRef.setValue("online");
-        }
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-
-        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
-            String currentUserEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
-            DatabaseReference userStatusRef = FirebaseDatabase.getInstance()
-                    .getReference("users").child(currentUserEmail.replace(".", ",")).child("status");
-        }
+        UserStatusUtils.markUserStatus(UserStatus.ONLINE, task -> {});
     }
 
     void createRecentChatsListener() {
