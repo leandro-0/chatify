@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -148,24 +149,6 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(i);
             });
         }
-    }
-
-    void registerFMCToken(String email) {
-        FirebaseMessaging.getInstance().getToken().addOnSuccessListener(token -> {
-            db.collection("users").limit(1).whereEqualTo("email", email).get().addOnSuccessListener(queryDocumentSnapshots -> {
-                if (!queryDocumentSnapshots.isEmpty()) {
-                    db.collection("users")
-                            .document(queryDocumentSnapshots.getDocuments().get(0).getId())
-                            .update("fcmToken", token)
-                            .addOnSuccessListener(aVoid -> {
-                                Toast.makeText(MainActivity.this, "Login successful", Toast.LENGTH_SHORT).show();
-                                Intent intent = new Intent(MainActivity.this, Home.class);
-                                startActivity(intent);
-                                finish();
-                            });
-                }
-            });
-        });
     }
 
     public static View.OnFocusChangeListener getEmailFocusChangeListener(EditText editTextEmail) {

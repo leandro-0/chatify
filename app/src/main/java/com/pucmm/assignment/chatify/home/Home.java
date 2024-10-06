@@ -2,6 +2,7 @@ package com.pucmm.assignment.chatify.home;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -50,8 +51,11 @@ public class Home extends AppCompatActivity {
             return insets;
         });
 
-        Toolbar toolbar = findViewById(R.id.toolbar);  // Asegúrate de que el ID corresponda a tu layout
-        setSupportActionBar(toolbar);  // Configurar la toolbar como la barra de acción
+        // Register the FCM token for the current user
+        registerFMCToken();
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         
         FloatingActionButton newChatButton = findViewById(R.id.floatingActionButton);
         newChatButton.setOnClickListener(v -> {
@@ -165,5 +169,21 @@ public class Home extends AppCompatActivity {
                 .whereArrayContains("members", userEmail)
                 .orderBy("lastMessage.timestamp", Query.Direction.DESCENDING)
                 .addSnapshotListener(listener);
+    }
+
+    void registerFMCToken() {
+        FirebaseMessaging.getInstance().getToken().addOnSuccessListener(token -> {
+            db.collection("users").limit(1).whereEqualTo("email", userEmail)
+                    .get().addOnSuccessListener(queryDocumentSnapshots -> {
+                    if (!queryDocumentSnapshots.isEmpty()) {
+                        db.collection("users")
+                                .document(queryDocumentSnapshots.getDocuments().get(0).getId())
+                                .update("fcmToken", token)
+                                .addOnSuccessListener(aVoid -> {
+                                    Log.i("HomePage", "FCM Token registered successfully");
+                                });
+                    }
+            });
+        });
     }
 }
