@@ -23,6 +23,17 @@
             android:layout_gravity="center"
             android:contentDescription="@string/logo" />
 
+        <!-- Texto Log in -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/welcome_back"
+            android:textSize="24sp"
+            android:textColor="@color/gray"
+            android:layout_marginTop="20dp"
+            android:layout_gravity="center"
+            android:textStyle="bold" />
+
         <!-- Texto Email -->
         <TextView
             android:layout_width="match_parent"
