@@ -49,33 +49,9 @@ public class RegisterPage extends AppCompatActivity {
             }
         });
 
-        editTextEmail.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (!hasFocus) {
-                    String email = String.valueOf(editTextEmail.getText());
-                    if (TextUtils.isEmpty(email)) {
-                        editTextEmail.setError("Email is required");
-                    } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                        editTextEmail.setError("Invalid email format");
-                    }
-                }
-            }
-        });
-
-        editTextPassword.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (!hasFocus) {
-                    String password = String.valueOf(editTextPassword.getText());
-                    if (TextUtils.isEmpty(password)) {
-                        editTextPassword.setError("Password is required");
-                    } else if (password.length() < 6) {
-                        editTextPassword.setError("Password must be at least 6 characters");
-                    }
-                }
-            }
-        });
+        /// Set focus change listeners to validate email and password fields
+        editTextEmail.setOnFocusChangeListener(MainActivity.getEmailFocusChangeListener(editTextEmail));
+        editTextPassword.setOnFocusChangeListener(MainActivity.getPasswordFocusChangeListener(editTextPassword));
 
         signUp.setOnClickListener(new View.OnClickListener() {
             @Override

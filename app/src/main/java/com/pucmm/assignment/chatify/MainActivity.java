@@ -31,6 +31,7 @@ import com.pucmm.assignment.chatify.chats.ChatActivity;
 import com.pucmm.assignment.chatify.core.models.ChatModel;
 import com.pucmm.assignment.chatify.home.Home;
 
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -81,6 +82,12 @@ public class MainActivity extends AppCompatActivity {
                 String email, password;
                 email = String.valueOf(editTextEmail.getText());
                 password = String.valueOf(editTextPassword.getText());
+                if (TextUtils.isEmpty(email) || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches() ||
+                        TextUtils.isEmpty(password) || password.length() < 6) {
+                    Toast.makeText(MainActivity.this, "Please fix the errors above", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 if (TextUtils.isEmpty(email)) {
                     Toast.makeText(MainActivity.this, "Email is required", Toast.LENGTH_SHORT).show();
                     return;
@@ -109,6 +116,10 @@ public class MainActivity extends AppCompatActivity {
                         });
             }
         });
+
+        /// Set focus change listeners to validate email and password fields
+        editTextEmail.setOnFocusChangeListener(getEmailFocusChangeListener(editTextEmail));
+        editTextPassword.setOnFocusChangeListener(getPasswordFocusChangeListener(editTextPassword));
     }
 
     @Override
@@ -155,5 +166,37 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         });
+    }
+
+    public static View.OnFocusChangeListener getEmailFocusChangeListener(EditText editTextEmail) {
+        return new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    String email = String.valueOf(editTextEmail.getText());
+                    if (TextUtils.isEmpty(email)) {
+                        editTextEmail.setError("Email is required");
+                    } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                        editTextEmail.setError("Invalid email format");
+                    }
+                }
+            }
+        };
+    }
+
+    public static View.OnFocusChangeListener getPasswordFocusChangeListener(EditText editTextPassword) {
+        return new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    String password = String.valueOf(editTextPassword.getText());
+                    if (TextUtils.isEmpty(password)) {
+                        editTextPassword.setError("Password is required");
+                    } else if (password.length() < 6) {
+                        editTextPassword.setError("Password must be at least 6 characters");
+                    }
+                }
+            }
+        };
     }
 }
