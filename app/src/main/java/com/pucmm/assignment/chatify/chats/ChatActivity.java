@@ -123,7 +123,7 @@ public class ChatActivity extends AppCompatActivity {
         sendBtn.setOnClickListener(v -> {
             final String message = messageInput.getText().toString();
             if (!message.isEmpty()) {
-                sendMessage(message);
+                sendMessage(message, false);
             }
         });
 
@@ -205,7 +205,7 @@ public class ChatActivity extends AppCompatActivity {
             fileReference.putFile(imageUri)
                     .addOnSuccessListener(taskSnapshot -> fileReference.getDownloadUrl().addOnSuccessListener(uri -> {
                         String imageUrl = uri.toString();
-                        sendMessage(imageUrl);
+                        sendMessage(imageUrl, true);
                     }))
                     .addOnFailureListener(e -> Toast.makeText(ChatActivity.this, "Failed to upload image", Toast.LENGTH_SHORT).show());
         }
@@ -217,9 +217,9 @@ public class ChatActivity extends AppCompatActivity {
         return mime.getExtensionFromMimeType(cR.getType(uri));
     }
 
-    private void sendMessage(String content) {
+    private void sendMessage(String content, boolean isImage) {
         Map<String, Object> data;
-        if (content.startsWith("http")) {
+        if (isImage) {
             // Sending an image message
             data = MessagesUtils.getImageMessageData(currentUserEmail, content);
         } else {
@@ -235,7 +235,7 @@ public class ChatActivity extends AppCompatActivity {
                         EditText messageInput = findViewById(R.id.messageInput);
                         messageInput.setText("");
 
-                        sendNotifications(content);
+                        sendNotifications(content, isImage);
                     } else {
                         Snackbar.make(findViewById(R.id.chatPage), "Failed to send the message", Snackbar.LENGTH_SHORT).show();
                     }
@@ -247,7 +247,7 @@ public class ChatActivity extends AppCompatActivity {
         );
     }
 
-    private void sendNotifications(String message) {
+    private void sendNotifications(String message, boolean isImage) {
         if (fmcTokens.isEmpty()) return;
 
         Thread thread = new Thread(new Runnable() {
@@ -259,7 +259,6 @@ public class ChatActivity extends AppCompatActivity {
                     String title = chat instanceof OneToOneChatModel
                             ? currentUserEmail
                             : currentUserEmail + " | " + ((GroupChatModel) chat).getTitle();
-                    String msg = message.startsWith("http") ? "\uD83D\uDDBC\uFE0F Image" : message;
 
                     for (final String fcmToken : fmcTokens) {
                         String json = "{\n" +
@@ -267,7 +266,9 @@ public class ChatActivity extends AppCompatActivity {
                                 "    \"token\": \"" + fcmToken + "\",\n" +
                                 "    \"notification\": {\n" +
                                 "      \"title\": \"" + title + "\",\n" +
-                                "      \"body\": \"" + msg + "\"\n" +
+                                (isImage
+                                        ? "      \"image\": \"" + message + "\"\n"
+                                        : "      \"body\": \"" + message + "\"\n") +
                                 "    },\n" +
                                 "    \"data\": {\n" +
                                 "      \"chatId\": \"" + chat.getId() + "\"\n" +
