@@ -32,7 +32,7 @@ public class MessagesUtils {
 
         if (messageData.get("type").equals("text")) {
             String content = messageData.get("content").toString();
-            obj.put("content", content.substring(0, Math.min(30, content.length())));
+            obj.put("content", content.substring(0, Math.min(30, content.length())) + (content.length() > 30 ? "..." : ""));
         } else {
             obj.put("content", "Image");
         }
