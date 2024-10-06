@@ -1,120 +1,125 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="40dp"
-    android:background="@color/white"
-    android:orientation="vertical"
-    android:gravity="center"
-    tools:context=".MainActivity">
-
-    <!-- Logo de la Universidad -->
-    <ImageView
-        android:id="@+id/logoImage"
-        android:layout_width="230dp"
-        android:layout_height="230dp"
-        android:src="@drawable/chatify"
-        android:layout_gravity="center"
-        android:contentDescription="@string/logo" />
-
-    <!-- Texto Log in -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/log_in"
-        android:textSize="24sp"
-        android:textColor="@color/gray"
-        android:layout_marginTop="20dp"
-        android:layout_gravity="center"
-        android:textStyle="bold" />
-
-    <!-- Texto Email -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Email"
-        android:textSize="16sp"
-        android:textColor="@color/gray"
-        android:textStyle="bold"
-        android:layout_marginTop="20dp" />
-
-    <!-- Campo de Email -->
-    <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/email"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="JohnDoe@example.com"
-            android:inputType="textEmailAddress"/>
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <!-- Texto Password -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Password"
-        android:textSize="16sp"
-        android:textColor="@color/gray"
-        android:textStyle="bold"
-        android:layout_marginTop="20dp" />
-
-    <!-- Campo de Password -->
-    <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/password"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="**********"
-            android:inputType="textPassword" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <!-- Botón Log in -->
-    <Button
-        android:id="@+id/sign_in"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/log_in"
-        android:textSize="20sp"
-        android:textColor="@color/white"
-        android:background="@drawable/round_btn"
-        android:layout_marginTop="40dp"
-        android:padding="12dp" />
-
-    <!-- Link de Sign Up -->
+    android:layout_height="match_parent">
     <LinearLayout
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="31dp"
-        android:layout_marginTop="20dp"
+        android:layout_height="match_parent"
+        android:padding="40dp"
+        android:background="@color/white"
+        android:orientation="vertical"
         android:gravity="center"
-        android:orientation="horizontal">
+        tools:context=".MainActivity">
 
+        <!-- Logo de la Universidad -->
+        <ImageView
+            android:id="@+id/logoImage"
+            android:layout_width="230dp"
+            android:layout_height="230dp"
+            android:src="@drawable/chatify"
+            android:layout_gravity="center"
+            android:contentDescription="@string/logo" />
+
+        <!-- Texto Log in -->
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="31dp"
-            android:text="Don't have an account?"
-            android:textSize="15sp"
+            android:layout_height="wrap_content"
+            android:text="@string/log_in"
+            android:textSize="24sp"
+            android:textColor="@color/gray"
+            android:layout_marginTop="20dp"
+            android:layout_gravity="center"
             android:textStyle="bold" />
 
+        <!-- Texto Email -->
         <TextView
-            android:id="@+id/sign_up"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Email"
+            android:textSize="16sp"
+            android:textColor="@color/gray"
+            android:textStyle="bold"
+            android:layout_marginTop="20dp" />
+
+        <!-- Campo de Email -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="JohnDoe@example.com"
+                android:inputType="textEmailAddress"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Texto Password -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Password"
+            android:textSize="16sp"
+            android:textColor="@color/gray"
+            android:textStyle="bold"
+            android:layout_marginTop="20dp" />
+
+        <!-- Campo de Password -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="**********"
+                android:inputType="textPassword" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Botón Log in -->
+        <Button
+            android:id="@+id/sign_in"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/log_in"
+            android:textSize="20sp"
+            android:textColor="@color/white"
+            android:background="@drawable/round_btn"
+            android:layout_marginTop="40dp"
+            android:padding="12dp" />
+
+        <!-- Link de Sign Up -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="31dp"
-            android:layout_marginStart="10dp"
-            android:text="Sign In"
-            android:textColor="@color/indigo"
-            android:textSize="15sp"
-            android:textStyle="bold" />
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="31dp"
+                android:text="Don't have an account?"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/sign_up"
+                android:layout_width="wrap_content"
+                android:layout_height="31dp"
+                android:layout_marginStart="10dp"
+                android:text="Sign In"
+                android:textColor="@color/indigo"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+        </LinearLayout>
     </LinearLayout>
-</LinearLayout>
+</ScrollView>
