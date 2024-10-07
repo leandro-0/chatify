@@ -37,6 +37,8 @@ import com.pucmm.assignment.chatify.core.models.OneToOneChatModel;
 import com.pucmm.assignment.chatify.core.models.SearchUserModel;
 import com.pucmm.assignment.chatify.core.utils.MessagesUtils;
 import com.pucmm.assignment.chatify.core.utils.ObservableSet;
+import com.pucmm.assignment.chatify.core.utils.UserStatus;
+import com.pucmm.assignment.chatify.core.utils.UserStatusUtils;
 
 import org.parceler.Parcels;
 
@@ -284,5 +286,11 @@ public class SearchPeople extends AppCompatActivity {
             return;
         }
         textView.setText("Selected users: " + String.join(", ", selectedUsers));
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        UserStatusUtils.markUserStatus(UserStatus.ONLINE, task -> {});
     }
 }

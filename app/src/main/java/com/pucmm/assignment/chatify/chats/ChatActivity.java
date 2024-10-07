@@ -39,6 +39,8 @@ import com.pucmm.assignment.chatify.core.models.MessageModel;
 import com.pucmm.assignment.chatify.core.models.OneToOneChatModel;
 import com.pucmm.assignment.chatify.core.models.TextMessageModel;
 import com.pucmm.assignment.chatify.core.utils.GeneralUtils;
+import com.pucmm.assignment.chatify.core.utils.UserStatus;
+import com.pucmm.assignment.chatify.core.utils.UserStatusUtils;
 import com.pucmm.assignment.chatify.home.Home;
 import com.pucmm.assignment.chatify.core.utils.MessagesUtils;
 import com.pucmm.assignment.chatify.GroupDescriptionActivity;
@@ -299,5 +301,11 @@ public class ChatActivity extends AppCompatActivity {
         });
 
         thread.start();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        UserStatusUtils.markUserStatus(UserStatus.ONLINE, task -> {});
     }
 }
