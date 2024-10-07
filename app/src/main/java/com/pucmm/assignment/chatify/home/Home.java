@@ -66,6 +66,9 @@ public class Home extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        // Delete the title from the toolbar
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
         
         FloatingActionButton newChatButton = findViewById(R.id.floatingActionButton);
         newChatButton.setOnClickListener(v -> {
