@@ -2,6 +2,7 @@ package com.pucmm.assignment.chatify.home;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -24,6 +25,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.pucmm.assignment.chatify.MainActivity;
 import com.pucmm.assignment.chatify.R;
+import com.pucmm.assignment.chatify.core.utils.UserStatus;
+import com.pucmm.assignment.chatify.core.utils.UserStatusUtils;
 import com.pucmm.assignment.chatify.search_people.SearchPeople;
 import com.pucmm.assignment.chatify.core.models.ChatModel;
 import com.pucmm.assignment.chatify.core.models.GroupChatModel;
@@ -50,8 +53,11 @@ public class Home extends AppCompatActivity {
             return insets;
         });
 
-        Toolbar toolbar = findViewById(R.id.toolbar);  // Asegúrate de que el ID corresponda a tu layout
-        setSupportActionBar(toolbar);  // Configurar la toolbar como la barra de acción
+        // Register the FCM token for the current user
+        registerFMCToken();
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         
         FloatingActionButton newChatButton = findViewById(R.id.floatingActionButton);
         newChatButton.setOnClickListener(v -> {
@@ -107,16 +113,13 @@ public class Home extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.action_logout) {
-            String currentUserEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
-            DatabaseReference userStatusRef = FirebaseDatabase.getInstance()
-                    .getReference("users").child(currentUserEmail.replace(".", ",")).child("status");
-
-            userStatusRef.setValue("offline").addOnCompleteListener(task -> {
+            UserStatusUtils.markUserStatus(UserStatus.OFFLINE, task -> {
                 FirebaseAuth.getInstance().signOut();
                 Intent intent = new Intent(Home.this, MainActivity.class);
                 startActivity(intent);
                 finish();
             });
+
             FirebaseMessaging.getInstance().deleteToken().addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     FirebaseAuth.getInstance().signOut();
@@ -139,25 +142,7 @@ public class Home extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-
-        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
-            String currentUserEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
-            DatabaseReference userStatusRef = FirebaseDatabase.getInstance()
-                    .getReference("users").child(currentUserEmail.replace(".", ",")).child("status");
-
-            userStatusRef.setValue("online");
-        }
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-
-        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
-            String currentUserEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
-            DatabaseReference userStatusRef = FirebaseDatabase.getInstance()
-                    .getReference("users").child(currentUserEmail.replace(".", ",")).child("status");
-        }
+        UserStatusUtils.markUserStatus(UserStatus.ONLINE, task -> {});
     }
 
     void createRecentChatsListener() {
@@ -165,5 +150,21 @@ public class Home extends AppCompatActivity {
                 .whereArrayContains("members", userEmail)
                 .orderBy("lastMessage.timestamp", Query.Direction.DESCENDING)
                 .addSnapshotListener(listener);
+    }
+
+    void registerFMCToken() {
+        FirebaseMessaging.getInstance().getToken().addOnSuccessListener(token -> {
+            db.collection("users").limit(1).whereEqualTo("email", userEmail)
+                    .get().addOnSuccessListener(queryDocumentSnapshots -> {
+                    if (!queryDocumentSnapshots.isEmpty()) {
+                        db.collection("users")
+                                .document(queryDocumentSnapshots.getDocuments().get(0).getId())
+                                .update("fcmToken", token)
+                                .addOnSuccessListener(aVoid -> {
+                                    Log.i("HomePage", "FCM Token registered successfully");
+                                });
+                    }
+            });
+        });
     }
 }
