@@ -15,6 +15,7 @@ public abstract class ChatModel {
     private LastMessageModel lastMessage;
     private Timestamp createdAt;
     private Set<String> members;
+    private boolean isNew;
 
     public ChatModel() {}
 
@@ -24,6 +25,7 @@ public abstract class ChatModel {
         this.lastMessage = lastMessage;
         this.createdAt = createdAt;
         this.members = members;
+        this.isNew = false;
     }
 
     public String getTitle() {
@@ -48,5 +50,17 @@ public abstract class ChatModel {
 
     public static ChatModel fromDocument(String currentUserEmail, DocumentSnapshot document) {
         return null;
+    }
+
+    public void updateLastMessage(DocumentSnapshot document) {
+        this.lastMessage = LastMessageModel.fromMap((Map<String, Object>) document.get("lastMessage"));
+    }
+
+    public boolean isNew() {
+        return isNew;
+    }
+
+    public void setNew(boolean aNew) {
+        isNew = aNew;
     }
 }

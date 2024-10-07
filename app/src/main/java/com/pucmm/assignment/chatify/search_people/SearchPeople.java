@@ -32,6 +32,7 @@ import com.pucmm.assignment.chatify.R;
 import com.pucmm.assignment.chatify.chats.ChatActivity;
 import com.pucmm.assignment.chatify.core.models.ChatModel;
 import com.pucmm.assignment.chatify.core.models.GroupChatModel;
+import com.pucmm.assignment.chatify.core.models.LastMessageModel;
 import com.pucmm.assignment.chatify.core.models.OneToOneChatModel;
 import com.pucmm.assignment.chatify.core.models.SearchUserModel;
 import com.pucmm.assignment.chatify.core.utils.MessagesUtils;
@@ -233,7 +234,7 @@ public class SearchPeople extends AppCompatActivity {
                         data.put("type", ChatModel.groupIdentifier);
                         data.put("admins", new ArrayList<>(List.of(currUserEmail)));
                         data.put("createdBy", currUserEmail);
-                        data.put("name", groupName); // Usar el nombre del grupo ingresado
+                        data.put("name", groupName.trim());
                         data.put("createdAt", Timestamp.now());
                         data.put("lastMessage", Map.of(
                                 "content", "",
@@ -245,7 +246,7 @@ public class SearchPeople extends AppCompatActivity {
                                     final ChatModel chat = new GroupChatModel(
                                             documentReference.getId(),
                                             groupName,
-                                            null,
+                                            LastMessageModel.fromMap((Map<String, Object>) data.get("lastMessage")),
                                             Timestamp.now(),
                                             new HashSet<>((List) data.get("members")),
                                             new HashSet<>(List.of(currUserEmail)),

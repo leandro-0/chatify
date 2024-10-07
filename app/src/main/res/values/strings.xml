@@ -50,7 +50,7 @@
     <string name="email">Email</string>
     <string name="logo">Logo</string>
     <string name="chats">Chats</string>
-    <string name="cerrar_sesi_n">Cerrar sesión</string>
+    <string name="cerrar_sesi_n">Log out</string>
     <string name="join_chatify">Join Chatify!</string>
     <string name="welcome_back">Welcome back!</string>
 </resources>
