@@ -218,13 +218,17 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void sendMessage(String content, boolean isImage) {
+        // Check and remove any leading or trailing whitespaces
+        if (content.trim().isEmpty()) return;
+        final String trimmedMessage = content.trim();
+
         Map<String, Object> data;
         if (isImage) {
             // Sending an image message
-            data = MessagesUtils.getImageMessageData(currentUserEmail, content);
+            data = MessagesUtils.getImageMessageData(currentUserEmail, trimmedMessage);
         } else {
             // Sending a text message
-            data = MessagesUtils.getMessageData(currentUserEmail, content);
+            data = MessagesUtils.getMessageData(currentUserEmail, trimmedMessage);
         }
 
         db.collection("conversations").document(chat.getId()).collection("messages")
@@ -235,7 +239,7 @@ public class ChatActivity extends AppCompatActivity {
                         EditText messageInput = findViewById(R.id.messageInput);
                         messageInput.setText("");
 
-                        sendNotifications(content, isImage);
+                        sendNotifications(trimmedMessage, isImage);
                     } else {
                         Snackbar.make(findViewById(R.id.chatPage), "Failed to send the message", Snackbar.LENGTH_SHORT).show();
                     }
