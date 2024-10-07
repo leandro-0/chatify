@@ -36,8 +36,10 @@ import com.pucmm.assignment.chatify.core.models.OneToOneChatModel;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.IntStream;
 
 public class Home extends AppCompatActivity {
@@ -46,6 +48,7 @@ public class Home extends AppCompatActivity {
     private String userEmail = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser())
             .getEmail();
     RecentChatsAdapter adapter;
+    private Set<String> chatIds = new HashSet<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +82,7 @@ public class Home extends AppCompatActivity {
         getInitialChats(queryDocumentSnapshots -> {
             for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
                 chats.add(transformDocumentToChat(userEmail, doc));
+                chatIds.add(doc.getId());
             }
 
             adapter = new RecentChatsAdapter(
@@ -102,10 +106,27 @@ public class Home extends AppCompatActivity {
                             .findFirst()
                             .orElse(-1);
 
+                    // New chat
+                    if (pos == -1 && !chatIds.contains(doc.getId())) {
+                        chatIds.add(doc.getId());
+                        chats.add(0, transformDocumentToChat(userEmail, doc));
+                        chats.get(0).setNew(true);
+                        adapter.notifyDataSetChanged();
+                        return;
+                    }
+
                     chats.get(pos).updateLastMessage(doc);
                     chats.get(pos).setNew(true);
 
                     Collections.sort(chats, (o1, o2) -> o2.getLastMessage().getTimestamp().compareTo(o1.getLastMessage().getTimestamp()));
+                    adapter.notifyDataSetChanged();
+                } else if (documentChange.getType() == DocumentChange.Type.ADDED) {
+                    QueryDocumentSnapshot doc = documentChange.getDocument();
+                    if (chatIds.contains(doc.getId())) return;
+                    chatIds.add(doc.getId());
+
+                    chats.add(0, transformDocumentToChat(userEmail, doc));
+                    chats.get(0).setNew(true);
                     adapter.notifyDataSetChanged();
                 }
             }
