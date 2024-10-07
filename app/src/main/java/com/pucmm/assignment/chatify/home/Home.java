@@ -1,6 +1,8 @@
 package com.pucmm.assignment.chatify.home;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -166,20 +168,19 @@ public class Home extends AppCompatActivity {
 
         if (id == R.id.action_logout) {
             UserStatusUtils.markUserStatus(UserStatus.OFFLINE, task -> {
-                FirebaseAuth.getInstance().signOut();
-                Intent intent = new Intent(Home.this, MainActivity.class);
-                startActivity(intent);
-                finish();
-            });
+                FirebaseMessaging.getInstance().deleteToken().addOnCompleteListener(ignored -> {
+                    SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(
+                            getString(R.string.preference_file_key), Context.MODE_PRIVATE
+                    );
+                    sharedPref.edit().putBoolean(getString(R.string.is_registered_key), false).apply();
 
-            FirebaseMessaging.getInstance().deleteToken().addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
                     FirebaseAuth.getInstance().signOut();
                     Intent intent = new Intent(Home.this, MainActivity.class);
                     startActivity(intent);
                     finish();
-                }
+                });
             });
+
             return true;
         }
 
@@ -207,7 +208,14 @@ public class Home extends AppCompatActivity {
     }
 
     void registerFMCToken() {
-        FirebaseMessaging.getInstance().getToken().addOnSuccessListener(token -> {
+        FirebaseMessaging messaging = FirebaseMessaging.getInstance();
+        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(
+                getString(R.string.preference_file_key), Context.MODE_PRIVATE
+        );
+
+        if (sharedPref.getBoolean(getString(R.string.is_registered_key), false)) return;
+
+        messaging.getToken().addOnSuccessListener(token -> {
             db.collection("users").limit(1).whereEqualTo("email", userEmail)
                     .get().addOnSuccessListener(queryDocumentSnapshots -> {
                     if (!queryDocumentSnapshots.isEmpty()) {
@@ -215,6 +223,7 @@ public class Home extends AppCompatActivity {
                                 .document(queryDocumentSnapshots.getDocuments().get(0).getId())
                                 .update("fcmToken", token)
                                 .addOnSuccessListener(aVoid -> {
+                                    sharedPref.edit().putBoolean(getString(R.string.is_registered_key), true).apply();
                                     Log.i("HomePage", "FCM Token registered successfully");
                                 });
                     }
